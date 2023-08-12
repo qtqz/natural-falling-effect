@@ -1,10 +1,15 @@
 //Natural falling
 /* eslint-disable */
 /**
- * by https://github.com/tangly1024/NotionNext/blob/main/components/Sakura.js
+ * main code by https://github.com/tangly1024/NotionNext/blob/main/components/Sakura.js
  * MIT license
  * and https://www.lifeee.top/posts/64617.html
  * and https://qiu-weidong.github.io/2022/04/30/blog/sakura/
+ * 
+ * 使用
+ * import { Sakura, SakuraDestroy } from './sakura.js';
+ * Sakura()//开始
+ * SakuraDestroy()//结束
  * 
  * edited by qztx(qtqz) 2023.8.8
  * 改为普通js模块
@@ -13,27 +18,65 @@
  * 可以停止飘落
  * 优化性能
  * 
- * TO DO
- * 支持飘落树叶、雪花、--雨滴--
- * 
- * 使用
- * import { Sakura, SakuraDestroy } from './sakura.js';
- * Sakura()//开始
- * SakuraDestroy()//结束
- * 
- * 
  * edited by qztx(qtqz) 2023.8.11
- * 整合
+ * 整合落花落叶下雪下雨
  * 
- * 
- * 
+ * globalSetting: {
+        custom: true,
+        changeImg: true,
+        changeShow: true,
+        changeRain: true,
+        imgSetting: ['petal'],
+        imgNumSetting: [50, 50, 80, 80],
+        showSetting: {
+          fadeIn: true,
+          fadeOut: true,
+          time: 20
+        },
+        rainSetting: {
+          wind_speed: 80,//风力
+          wind_speed_x: 5,//横向风力误差
+          wind_angle: 260,//从+x方向逆时针角度，270为垂直向下
+          hasBounce: true,//落地溅水花
+          numLevel: 1,//淡入速度
+          gravity: 0.163//重力
+        },
+        zIndex: 100,
+        size:[40,40,2.5]
+      },
+      globalSettingBackup: {}
+    }
  */
-
 
 /**
  * 创建樱花雨
  * @param config
  */
+//主人表=默认表
+const defaultSetting = {
+    open: true,
+    custom: true,
+    changeImg: true,
+    changeShow: true,
+    changeRain: true,
+    imgSetting: ['petal'],
+    imgNumSetting: [50, 50, 80, 80],
+    showSetting: {
+        fadeIn: true,
+        fadeOut: true,
+        time: 20
+    },
+    rainSetting: {
+        wind_speed: 80,
+        wind_speed_x: 5,
+        wind_angle: 260,
+        hasBounce: true,
+        numLevel: 1,
+        gravity: 0.163
+    },
+    zIndex: 100,
+    size: [40, 40, 2.5]
+}
 const id = 'canvas_natural_falling'
 var stop
 const destroyFalling = () => {
@@ -44,16 +87,47 @@ const destroyFalling = () => {
         createdFalling.parentNode.removeChild(createdFalling)
     }
 }
+
+
+const dealSetting = (t, s, ms) => {
+    //if (!s.open) return不应在这里判断
+    var imgs, imgsNum
+    var date = new Date()
+    var m = date.getMonth() + 1
+    if (m >= 3 && m <= 5) imgs = ['petal']
+    else if (m >= 9 && m <= 11) imgs = ['leaf']
+    else if (m == 12 || m <= 2) imgs = ['snow']
+    else if (m >= 6 && m <= 8) imgs = ['rain']
+    //读主人设置
+    if (defaultSetting.changeImg) imgs = defaultSetting.imgSetting
+    //读访客设置
+    if (s.custom && s.changeImg) imgs = s.imgSetting
+    imgsNum = imgs.length
+
+    console.log(1)
+    for (let i = 0; i < imgsNum; i++) {
+        createFalling(imgs[i], s, ms)
+    }
+}
+
 /**
  * @param {String} t 类型，petal 花瓣，leaf 落叶，snow 雪花
  * 定义基本变量，定义通用列表，分别定义每种类与方法
  * 进入if定义随机函数，定义start函数，调用start函数
  */
-const createFalling = (t, opts) => {
+const createFalling = (t, s, ms) => {
+    //确定图案类型，应该创建一个新函数，先传入它，如果多个图案就重复调用这个函数
+    /*if (t == 'test') {
+        t = opts.imgSetting.includes('rain') ? 'rain' : t
+        t = opts.imgSetting.includes('snow') ? 'snow' : t
+        t = opts.imgSetting.includes('leaf') ? 'leaf' : t
+        t = opts.imgSetting.includes('petal') ? 'petal' : t
+    }*/
     var staticx
     var w = window.innerWidth,
         h = window.innerHeight
     var img = new Image(), img2 = new Image(), img3 = new Image()
+    var getRandom
 
     let FallingList = function () {
         this.list = []
@@ -78,8 +152,6 @@ const createFalling = (t, opts) => {
         return this.list.length
     }
 
-    var getRandom
-
     //petal(sakura)
     function Petal(x, y, s, r, fn) {
         this.x = x
@@ -90,11 +162,9 @@ const createFalling = (t, opts) => {
     }
     Petal.prototype.draw = function (ctx) {
         ctx.save()
-        //var xc = (5 * this.s) / 5
         ctx.translate(this.x, this.y)
         ctx.rotate(this.r)
-        //25,30
-        ctx.drawImage(img, 0, 0, 40 * this.s, 40 * this.s)
+        ctx.drawImage(img, 0, 0, sSize * this.s, sSize * this.s)
         ctx.restore()
     }
     Petal.prototype.update = function () {
@@ -143,15 +213,15 @@ const createFalling = (t, opts) => {
         ctx.save()
         ctx.translate(this.x, this.y)
         ctx.rotate(this.r)
-        if (this.i < 25) ctx.drawImage(img2, 0, 0, 40 * this.s, 40 * this.s)
-        else ctx.drawImage(img3, 0, 0, 40 * this.s, 40 * this.s)
+        if (this.i < halfNum) ctx.drawImage(img2, 0, 0, sSize * this.s, sSize * this.s)
+        else ctx.drawImage(img3, 0, 0, sSize * this.s, sSize * this.s)
         ctx.restore()
     }
     Leaf.prototype.update = function () {
         this.x = this.fn.x(this.x, this.y)
         this.y = this.fn.y(this.y, this.y)
         this.r = this.fn.r(this.r)
-        if (           this.x > w ||
+        if (this.x > w ||
             this.x < 0 ||
             this.y > h ||
             this.y < 0
@@ -248,7 +318,7 @@ const createFalling = (t, opts) => {
         this.x = w * Math.random()
         this.y = 0
         this.s = 10 + wind_speed * Math.random()
-        this.speed_x = this.s * Math.cos(a2) + (Math.random() - 0.5) * 5
+        this.speed_x = this.s * Math.cos(a2) + (Math.random() - 0.5) * wind_speed_x
         this.speed_y = -this.s * Math.sin(a2);
         this.px = this.x
         this.py = this.y
@@ -312,6 +382,7 @@ const createFalling = (t, opts) => {
     }
 
 
+    var sNum, sSize
     //每个特别定义
     if (t == 'petal') {
         {
@@ -354,6 +425,12 @@ const createFalling = (t, opts) => {
             }
             return ret
         }
+        //有关访客设置，如果访客改了，以访客为准，不然依主人配置（默认配置）
+        if (s.changeImg && s.imgNumSetting[0]) sNum = s.imgNumSetting[0]
+        else sNum = defaultSetting.imgNumSetting[0]
+        //无关访客设置
+        sSize = defaultSetting.size[0]
+
     }
     //leaf，银杏树叶和橘黄枫叶
     else if (t == 'leaf') {
@@ -401,6 +478,10 @@ const createFalling = (t, opts) => {
             }
             return ret
         }
+        if (s.changeImg && s.imgNumSetting[1]) sNum = s.imgNumSetting[1]
+        else sNum = defaultSetting.imgNumSetting[1]
+        var halfNum = sNum / 2
+        sSize = defaultSetting.size[1]
     }
     //snow
     else if (t == 'snow') {
@@ -417,7 +498,7 @@ const createFalling = (t, opts) => {
                     ret = Math.random() * 0.75 + 0.25
                     break
                 case 'r':
-                    ret = Math.random() * 2.5 + 2
+                    ret = Math.random() * sSize + 2
                     break
                 case 'fnx':
                     random = -0.5 + Math.random()
@@ -438,20 +519,24 @@ const createFalling = (t, opts) => {
             }
             return ret
         }
+        if (s.changeImg && s.imgNumSetting[2]) sNum = s.imgNumSetting[2]
+        else sNum = defaultSetting.imgNumSetting[2]
+        sSize = defaultSetting.size[2]
     }
     //rain
     else if (t == 'rain') {
         var rain_width = 2//1.5
         var drops = [], bounces = []
         var DPR = window.devicePixelRatio
-        var wind_speed, wind_speed_x, wind_angle, hasBounce, maxNum, numLevel, gravity
-        wind_speed = opts.wind_speed || 80
-        wind_speed_x = opts.wind_speed_x || 5
-        wind_angle = opts.wind_angle || 270
-        hasBounce = opts.hasBounce == undefined ? true : opts.hasBounce
-        maxNum = opts.maxNum || 80
-        numLevel = opts.numLevel || 1
-        gravity = opts.gravity || 0.163
+        var wind_speed, wind_speed_x, wind_angle, hasBounce, numLevel, gravity
+        wind_speed = s.rainSetting.wind_speed || ms.rainSetting.wind_speed
+        wind_speed_x = s.rainSetting.wind_speed_x || ms.rainSetting.wind_speed_x
+        wind_angle = s.rainSetting.wind_angle || ms.rainSetting.wind_angle
+        hasBounce = s.rainSetting.hasBounce == undefined ? ms.rainSetting.hasBounce : s.rainSetting.hasBounce
+        if (s.changeImg && s.imgNumSetting[3]) sNum = s.imgNumSetting[3]
+        else sNum = ms.imgNumSetting[3]
+        numLevel = s.rainSetting.numLevel || ms.rainSetting.numLevel
+        gravity = s.rainSetting.gravity || ms.rainSetting.gravity
         //将角度乘 0.017453293 （2PI/360）可转换为弧度。
         var eachAnger = 0.017453293;
         var a2 = wind_angle * eachAnger
@@ -472,13 +557,14 @@ const createFalling = (t, opts) => {
             window.msRequestAnimationFrame ||
             window.oRequestAnimationFrame
         var canvas = document.createElement('canvas'),
+            zIndex = ms.zIndex,
             ctx
         staticx = true
         canvas.height = window.innerHeight
         canvas.width = window.innerWidth
         canvas.setAttribute(
             'style',
-            'position: fixed;left: 0;top: 0;pointer-events: none;z-index: 100;'
+            'position: fixed;left: 0;top: 0;pointer-events: none;z-index:' + zIndex + ';'
         )
         canvas.setAttribute('id', id)
         document.getElementsByTagName('body')[0].appendChild(canvas)
@@ -486,7 +572,7 @@ const createFalling = (t, opts) => {
         var fallingList = new FallingList()
         //每个的创建步骤
         if (t == 'petal') {
-            for (var i = 0; i < 50; i++) {
+            for (var i = 0; i < sNum; i++) {
                 //创建50个
                 var someFalling,
                     randomX,
@@ -512,7 +598,7 @@ const createFalling = (t, opts) => {
                 fallingList.push(someFalling)
             }
         } else if (t == 'leaf') {
-            for (var i = 0; i < 50; i++) {
+            for (var i = 0; i < sNum; i++) {
                 //创建50个
                 var someFalling,
                     randomX,
@@ -538,7 +624,7 @@ const createFalling = (t, opts) => {
                 fallingList.push(someFalling)
             }
         } else if (t == 'snow') {
-            for (var i = 0; i < 60; i++) {
+            for (var i = 0; i < sNum; i++) {
                 //创建50个
                 var someFalling,
                     randomX,
@@ -569,7 +655,7 @@ const createFalling = (t, opts) => {
         }
 
         function updateRain() {
-            if (drops.length < maxNum) {
+            if (drops.length < sNum) {
                 var i = 0, len = numLevel;
                 for (; i < len; i++) {
                     drops.push(new Drop());
@@ -622,5 +708,6 @@ const createFalling = (t, opts) => {
     startFall(t)
 }
 //
+export const Falling2 = dealSetting
 export const Falling = createFalling
 export const FallingDestroy = destroyFalling

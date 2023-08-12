@@ -9,29 +9,40 @@
     <button @click="setting2()">选项</button>
     <div class="cotainer" v-show="openSetting">
       <h2>设定</h2>
-      <h3 style="align-self: flex-start;"><label for="oc">开启自定义选项 </label><input
-          style="width: 1.3rem;height: 1.3rem;vertical-align: sub;" type="checkbox" id="oc"
-          v-model="globalSetting.custom"></h3>
+      <h3 style="width: 100%;padding: 0 1rem;">
+        <div style="float: left;"><label for="ts">总开关 </label><input
+            style="width: 1.3rem;height: 1.3rem;vertical-align: sub;" type="checkbox" id="ts"
+            v-model="globalSetting.open"></div>
+        <div style="float: right;"><label for="oc">开启自定义选项 </label><input
+            style="width: 1.3rem;height: 1.3rem;vertical-align: sub;" type="checkbox" id="oc"
+            v-model="globalSetting.custom"></div>
+      </h3>
       <hr style="width: 80%;margin: 0 auto;">
       <br>
-      <div class="option-list">
-      </div>
       <div class="option-row">
-        <div class="option-mask" v-show="!globalSetting.custom"></div>
+        <div class="option-mask" v-show="!globalSetting.custom || !globalSetting.open"></div>
         <div class="option-col">
           <div class="f-type"><input type="checkbox" id="ci" v-model="globalSetting.changeImg"><label
               for="ci">自定义图案</label></div>
           <div><input type="checkbox" id="petal" value="petal" v-model="globalSetting.imgSetting" checked
-              :disabled="!globalSetting.changeImg"><label for="petal">花瓣</label>
+              :disabled="!globalSetting.changeImg"><label for="petal">花瓣</label> <input style="width: 2.5em;"
+              type="number" v-model="globalSetting.imgNumSetting[0]"
+              :disabled="!globalSetting.imgSetting.includes('petal') || !globalSetting.changeImg"> 个
           </div>
           <div><input type="checkbox" id="leaf" value="leaf" v-model="globalSetting.imgSetting"
-              :disabled="!globalSetting.changeImg"><label for="leaf">落叶</label>
+              :disabled="!globalSetting.changeImg"><label for="leaf">落叶</label> <input style="width: 2.5em;" type="number"
+              v-model="globalSetting.imgNumSetting[1]"
+              :disabled="!globalSetting.imgSetting.includes('leaf') || !globalSetting.changeImg"> 个
           </div>
           <div><input type="checkbox" id="snow" value="snow" v-model="globalSetting.imgSetting"
-              :disabled="!globalSetting.changeImg"><label for="snow">雪花</label>
+              :disabled="!globalSetting.changeImg"><label for="snow">雪花</label> <input style="width: 2.5em;" type="number"
+              v-model="globalSetting.imgNumSetting[2]"
+              :disabled="!globalSetting.imgSetting.includes('snow') || !globalSetting.changeImg"> 个
           </div>
           <div><input type="checkbox" id="rain" value="rain" v-model="globalSetting.imgSetting"
-              :disabled="!globalSetting.changeImg"><label for="rain">雨点</label>
+              :disabled="!globalSetting.changeImg"><label for="rain">雨点</label> <input style="width: 2.5em;" type="number"
+              v-model="globalSetting.imgNumSetting[3]"
+              :disabled="!globalSetting.imgSetting.includes('rain') || !globalSetting.changeImg"> 个
           </div>
         </div>
         <div class="option-col">
@@ -58,14 +69,13 @@
           <div><input type="checkbox" id="bo" v-model="globalSetting.rainSetting.hasBounce"
               :disabled="!globalSetting.changeRain"><label for="bo">落地水花</label>
           </div>
-        </div>
+        </div><!--
         <div class="option-col">
           <div class="f-test">测试</div>
-        </div>
+        </div>-->
       </div>
-      <div>{{ globalSetting }}</div>
       <div class="text_area">
-        <p>GUI界面，可选类型，淡入淡出，记忆设置，是否启用, 选项：默认配置（淡入10s淡出，根据季节选择图案）/自定义</p>
+        <p>{{ globalSetting }}</p>
         <p>自定义：开启关闭每个自定义，自定义图案类型，是否淡入，是否10s淡出，应用/确定/取消</p>
       </div>
       <div class="btn-list">
@@ -73,6 +83,7 @@
         <button @click="reset()">重置</button>
         <button @click="confirm()">确定</button>
         <button @click="cancel()">取消</button>
+        <button @click="start('test', globalSetting, masterSetting)">测试</button>
       </div>
       <div class="link-list">
         <div></div>
@@ -90,20 +101,24 @@
 
 <script>
 // eslint-disable-next-line no-unused-vars
-import { Falling, FallingDestroy } from './naturalfalling.js';
+import { Falling2, Falling, FallingDestroy } from './naturalfalling.js';
 
 export default {
   name: 'vue-natural-falling',
-  props:['openSetting'],
-  emits:['setting'],
+  props: ['openSetting'],
+  emits: ['setting'],
   data() {
     return {
-      globalSetting: {
+      globalSetting: {},
+      globalSettingBackup: {},
+      masterSetting: {
+        open: true,
         custom: true,
         changeImg: true,
         changeShow: true,
         changeRain: true,
         imgSetting: ['petal'],
+        imgNumSetting: [50, 50, 80, 80],
         showSetting: {
           fadeIn: true,
           fadeOut: true,
@@ -117,9 +132,10 @@ export default {
           maxNum: 80,//雨滴数量
           numLevel: 1,//淡入速度
           gravity: 0.163//重力
-        }
+        },
+        zIndex: 100,
+        size: [40, 40, 2.5]
       },
-      globalSettingBackup: {}
     }
   },
   methods: {
@@ -127,7 +143,7 @@ export default {
 
     },
     reset() {
-
+      this.globalSetting = JSON.parse(JSON.stringify(this.globalSettingBackup))
     },
     confirm() {
       this.setting2()
@@ -138,20 +154,30 @@ export default {
     setting2() {
       this.$emit('setting')
     },
-    start(t, o) {
-      Falling(t, o)
+    start(t, s, ms) {
+      Falling2(t, s, ms)
     },
     stop() {
       FallingDestroy()
     },
   },
   created() {
+    this.globalSetting = JSON.parse(JSON.stringify(this.masterSetting))
+    this.globalSettingBackup = JSON.parse(JSON.stringify(this.globalSetting))
   },
   mounted() {
     console.log(`The initial.`)
     /**
      * 
-     * 
+     * TO DO
+     * GUI界面
+     * GUI逻辑
+     * js整合配置
+     * 控制z-index
+     * GUI可用
+     * 容错
+     * 自动跟季节选择
+     * 记忆到本地
      * 
      * TO DO
      * 淡入淡出
@@ -231,6 +257,7 @@ a {
   /*position: absolute;*/
   box-sizing: border-box;
   width: 800px;
+  width: 780px;
   min-height: 600px;
   margin: 70px auto;
   padding: 2em 4em;
@@ -243,6 +270,10 @@ a {
   flex-direction: column;
   align-items: center;
   /*justify-content: center;*/
+}
+
+.cotainer>* {
+  box-sizing: border-box;
 }
 
 .btn-list {
@@ -271,7 +302,7 @@ a {
   position: relative;
   min-height: 150px;
   width: 100%;
-  padding: 1em 0;
+  padding-top: 1.5em;
   margin: 1em 0;
   display: flex;
   flex-wrap: wrap;
@@ -304,5 +335,6 @@ a {
 
 .option-col:last-child:after {
   content: unset;
-}</style>
+}
+</style>
   
