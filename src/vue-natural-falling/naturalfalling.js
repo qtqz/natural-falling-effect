@@ -21,39 +21,16 @@
  * edited by qztx(qtqz) 2023.8.11
  * 整合落花落叶下雪下雨
  * 
- * globalSetting: {
-        custom: true,
-        changeImg: true,
-        changeShow: true,
-        changeRain: true,
-        imgSetting: ['petal'],
-        imgNumSetting: [50, 50, 80, 80],
-        showSetting: {
-          fadeIn: true,
-          fadeOut: true,
-          time: 20
-        },
-        rainSetting: {
-          wind_speed: 80,//风力
-          wind_speed_x: 5,//横向风力误差
-          wind_angle: 260,//从+x方向逆时针角度，270为垂直向下
-          hasBounce: true,//落地溅水花
-          numLevel: 1,//淡入速度
-          gravity: 0.163//重力
-        },
-        zIndex: 100,
-        size:[40,40,2.5]
-      },
-      globalSettingBackup: {}
-    }
+ * edited by qztx(qtqz) 2023.8.13
+ * 接受配置
  */
 
 /**
  * 创建樱花雨
  * @param config
  */
-//主人表=默认表
-const defaultSetting = {
+//主人表=默认表，备份
+const defaultConfig = {
     open: true,
     custom: true,
     changeImg: true,
@@ -75,7 +52,7 @@ const defaultSetting = {
         gravity: 0.163
     },
     zIndex: 100,
-    size: [40, 40, 2.5]
+    imgSize: [40, 40, 2.5]
 }
 const id = 'canvas_natural_falling'
 var stop
@@ -89,41 +66,40 @@ const destroyFalling = () => {
 }
 
 
-const dealSetting = (t, s, ms) => {
+/**
+ * @param {Object} c config，访客配置
+ * @param {Object} mc master config，主人配置
+ * 用于判断图案类型
+ */
+const readyCreate = (c, mc) => {
     //if (!s.open) return不应在这里判断
-    var imgs, imgsNum
+    var imgs
     var date = new Date()
     var m = date.getMonth() + 1
-    if (m >= 3 && m <= 5) imgs = ['petal']
-    else if (m >= 9 && m <= 11) imgs = ['leaf']
-    else if (m == 12 || m <= 2) imgs = ['snow']
-    else if (m >= 6 && m <= 8) imgs = ['rain']
-    //读主人设置, 无视自定义开关
-    imgs = ms.imgSetting
+    //读主人设置, 无视自定义开关，若都不选就是自动选择，不是不开启
+    imgs = mc.imgSetting
     //读访客设置
-    if (s.custom && s.changeImg) imgs = s.imgSetting
-    imgsNum = imgs.length
-
-    console.log(1)
-    for (let i = 0; i < imgsNum; i++) {
-        createFalling(imgs[i], s, ms)
+    if (c.custom && c.changeImg) imgs = c.imgSetting
+    if (imgs.length == 0) {
+        if (m >= 3 && m <= 5) imgs = ['petal']
+        else if (m >= 9 && m <= 11) imgs = ['leaf']
+        else if (m == 12 || m <= 2) imgs = ['snow']
+        else if (m >= 6 && m <= 8) imgs = ['rain']
+    }
+    for (let i = 0; i < imgs.length; i++) {
+        createFalling(imgs[i], c, mc)
     }
 }
 
 /**
- * @param {String} t 类型，petal 花瓣，leaf 落叶，snow 雪花
+ * @param {String} t type，petal 花瓣，leaf 落叶，snow 雪花，rain 雨滴
+ * @param {Object} c config，访客配置
+ * @param {Object} mc master config，主人配置
  * 定义基本变量，定义通用列表，分别定义每种类与方法
  * 进入if定义随机函数，定义start函数，调用start函数
  */
-const createFalling = (t, s, ms) => {
-    //确定图案类型，应该创建一个新函数，先传入它，如果多个图案就重复调用这个函数
-    /*if (t == 'test') {
-        t = opts.imgSetting.includes('rain') ? 'rain' : t
-        t = opts.imgSetting.includes('snow') ? 'snow' : t
-        t = opts.imgSetting.includes('leaf') ? 'leaf' : t
-        t = opts.imgSetting.includes('petal') ? 'petal' : t
-    }*/
-    var staticx, timeOver = false, isDestroy = false
+const createFalling = (t, c, mc) => {
+    var isTimeOver = false, isDestroy = false
     var w = window.innerWidth,
         h = window.innerHeight
     var img = new Image(), img2 = new Image(), img3 = new Image()
@@ -179,7 +155,7 @@ const createFalling = (t, s, ms) => {
             //为支持淡入，取消此判断
             // ||this.y < 0
         ) {
-            if (isFadeOut && timeOver) return
+            if (isFadeOut && isTimeOver) return
             let ran = Math.random()
             if (ran > 0.42) {
                 //0.4//较大可能，顶部任意位置
@@ -225,9 +201,9 @@ const createFalling = (t, s, ms) => {
         this.r = this.fn.r(this.r)
         if (this.x > w ||
             this.x < 0 ||
-            this.y > h 
+            this.y > h
         ) {
-            if (isFadeOut && timeOver) return
+            if (isFadeOut && isTimeOver) return
             let ran = Math.random()
             if (ran > 0.42) {
                 this.x = getRandom('x')
@@ -280,9 +256,9 @@ const createFalling = (t, s, ms) => {
         if (
             this.x > w ||
             this.x < 0 ||
-            this.y > h 
+            this.y > h
         ) {
-            if (isFadeOut && timeOver) return
+            if (isFadeOut && isTimeOver) return
             let ran = Math.random()
             if (ran > 0.42) {
                 this.x = getRandom('x')
@@ -333,7 +309,8 @@ const createFalling = (t, s, ms) => {
         this.x += this.speed_x
         this.y += this.speed_y
         if (this.y > h) {
-            if (isFadeOut && timeOver) return
+            //只处理超过底部的雨，溅水花，在别处处理超过两侧的雨
+            if (isFadeOut && isTimeOver) return
             this.y = 0
             this.px = this.x
             this.py = this.y
@@ -358,11 +335,11 @@ const createFalling = (t, s, ms) => {
     }
     /**
      * @param x, y 基础坐标
-     * dist 比率
+     * dist 反弹力度，与风力有关
      * angle 角度弧度
      */
     function Bounce(x, y) {
-        var dist = Math.random() * 4;
+        var dist = Math.random() * wind_speed / 20;
         var angle = Math.PI + Math.random() * Math.PI;
         this.x = x
         this.y = y
@@ -384,21 +361,21 @@ const createFalling = (t, s, ms) => {
         ctx.fill();
     }
 
-
+    //s: some
     var sNum, sSize, isFadeOut, fadeOutTime, isFadeIn
-    if (s.changeShow && s.custom) {
-        if (s.showSetting.time >= 1) {
-            isFadeOut = s.showSetting.fadeOut
-            fadeOutTime = s.showSetting.time
+    if (c.changeShow && c.custom) {
+        if (c.showSetting.time >= 1) {
+            isFadeOut = c.showSetting.fadeOut
+            fadeOutTime = c.showSetting.time
         } else isFadeOut = false
     }
-    else if (ms.showSetting.time >= 1) {
-        isFadeOut = ms.showSetting.fadeOut
-        fadeOutTime = ms.showSetting.time
+    else if (mc.showSetting.time >= 1) {
+        isFadeOut = mc.showSetting.fadeOut
+        fadeOutTime = mc.showSetting.time
     } else isFadeOut = false
     if (isFadeOut) {
         setTimeout(() => {
-            timeOver = true
+            isTimeOver = true
             console.log('timeOver')
         }, fadeOutTime * 1000)
         setTimeout(() => {
@@ -407,7 +384,7 @@ const createFalling = (t, s, ms) => {
             console.log('destroy')
         }, fadeOutTime * 1000 + 10000)
     }
-    s.changeShow && s.custom ? isFadeIn = s.showSetting.fadeIn : isFadeIn == ms.showSetting.fadeIn
+    c.changeShow && c.custom ? isFadeIn = c.showSetting.fadeIn : isFadeIn == mc.showSetting.fadeIn
     //每个特别定义
     if (t == 'petal') {
         {
@@ -451,10 +428,10 @@ const createFalling = (t, s, ms) => {
             return ret
         }
         //有关访客设置，如果访客改了，以访客为准，不然依主人配置（默认配置）
-        if (s.changeImg && s.imgNumSetting[0]) sNum = s.imgNumSetting[0]
-        else sNum = ms.imgNumSetting[0]
+        if (c.changeImg && c.imgNumSetting[0]) sNum = c.imgNumSetting[0]
+        else sNum = mc.imgNumSetting[0]
         //无关访客设置
-        sSize = ms.size[0]
+        sSize = mc.imgSize[0]
 
     }
     //leaf，银杏树叶和橘黄枫叶
@@ -503,10 +480,10 @@ const createFalling = (t, s, ms) => {
             }
             return ret
         }
-        if (s.changeImg && s.imgNumSetting[1]) sNum = s.imgNumSetting[1]
-        else sNum = ms.imgNumSetting[1]
+        if (c.changeImg && c.imgNumSetting[1]) sNum = c.imgNumSetting[1]
+        else sNum = mc.imgNumSetting[1]
         var halfNum = sNum / 2
-        sSize = ms.size[1]
+        sSize = mc.imgSize[1]
     }
     //snow
     else if (t == 'snow') {
@@ -544,9 +521,9 @@ const createFalling = (t, s, ms) => {
             }
             return ret
         }
-        if (s.changeImg && s.imgNumSetting[2]) sNum = s.imgNumSetting[2]
-        else sNum = ms.imgNumSetting[2]
-        sSize = ms.size[2]
+        if (c.changeImg && c.imgNumSetting[2]) sNum = c.imgNumSetting[2]
+        else sNum = mc.imgNumSetting[2]
+        sSize = mc.imgSize[2]
     }
     //rain
     else if (t == 'rain') {
@@ -554,14 +531,14 @@ const createFalling = (t, s, ms) => {
         var drops = [], bounces = []
         var DPR = window.devicePixelRatio
         var wind_speed, wind_speed_x, wind_angle, hasBounce, numLevel, gravity
-        wind_speed = s.rainSetting.wind_speed || ms.rainSetting.wind_speed
-        wind_speed_x = s.rainSetting.wind_speed_x || ms.rainSetting.wind_speed_x
-        wind_angle = s.rainSetting.wind_angle || ms.rainSetting.wind_angle
-        hasBounce = s.rainSetting.hasBounce == undefined ? ms.rainSetting.hasBounce : s.rainSetting.hasBounce
-        if (s.changeImg && s.imgNumSetting[3]) sNum = s.imgNumSetting[3]
-        else sNum = ms.imgNumSetting[3]
-        numLevel = s.rainSetting.numLevel || ms.rainSetting.numLevel
-        gravity = s.rainSetting.gravity || ms.rainSetting.gravity
+        wind_speed = c.rainSetting.wind_speed || mc.rainSetting.wind_speed
+        wind_speed_x = c.rainSetting.wind_speed_x || mc.rainSetting.wind_speed_x
+        wind_angle = c.rainSetting.wind_angle || mc.rainSetting.wind_angle
+        hasBounce = c.rainSetting.hasBounce == undefined ? mc.rainSetting.hasBounce : c.rainSetting.hasBounce
+        if (c.changeImg && c.imgNumSetting[3]) sNum = c.imgNumSetting[3]
+        else sNum = mc.imgNumSetting[3]
+        numLevel = c.rainSetting.numLevel || mc.rainSetting.numLevel
+        gravity = c.rainSetting.gravity || mc.rainSetting.gravity
         //将角度乘 0.017453293 （2PI/360）可转换为弧度。
         var eachAnger = 0.017453293;
         var a2 = wind_angle * eachAnger
@@ -582,9 +559,8 @@ const createFalling = (t, s, ms) => {
             window.msRequestAnimationFrame ||
             window.oRequestAnimationFrame
         var canvas = document.createElement('canvas'),
-            zIndex = ms.zIndex,
+            zIndex = mc.zIndex,
             ctx
-        staticx = true
         canvas.height = window.innerHeight
         canvas.width = window.innerWidth
         canvas.setAttribute(
@@ -686,9 +662,9 @@ const createFalling = (t, s, ms) => {
                     drops.push(new Drop());
                 }
             }
-            var i = drops.length;
-            while (i--) {
-                var drop = drops[i];
+            var j = drops.length;
+            while (j--) {
+                var drop = drops[j];
                 drop.update();
                 if (drop.x > w) {
                     drop.x = 0
@@ -702,12 +678,12 @@ const createFalling = (t, s, ms) => {
                 drop.draw(ctx);
             };
             if (hasBounce) {
-                var i = bounces.length;
-                while (i--) {
-                    var bounce = bounces[i];
+                var k = bounces.length;
+                while (k--) {
+                    var bounce = bounces[k];
                     bounce.update();
                     bounce.draw(ctx);
-                    if (bounce.y > h) bounces.splice(i, 1);
+                    if (bounce.y > h) bounces.splice(k, 1);
                 };
             };
         }
@@ -743,6 +719,6 @@ const createFalling = (t, s, ms) => {
     startFall(t)
 }
 //
-export const Falling2 = dealSetting
+export const Falling2 = readyCreate
 export const Falling = createFalling
 export const FallingDestroy = destroyFalling

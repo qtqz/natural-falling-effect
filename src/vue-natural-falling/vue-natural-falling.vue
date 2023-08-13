@@ -4,7 +4,7 @@
     <button @click="start('petal')">落花</button>
     <button @click="start('leaf')">落叶</button>
     <button @click="start('snow')">下雪</button>
-    <button @click="start('rain', globalSetting.rainSetting)">下雨</button>
+    <button @click="start('rain', globalConfig.rainSetting)">下雨</button>
     <button @click="stop()">停止</button>
     <button @click="setting2()">选项</button>
     <div class="cotainer" v-show="openSetting">
@@ -12,62 +12,62 @@
       <h3 style="width: 100%;padding: 0 1rem;">
         <div style="float: left;"><label for="ts">总开关 </label><input
             style="width: 1.3rem;height: 1.3rem;vertical-align: sub;" type="checkbox" id="ts"
-            v-model="globalSetting.open"></div>
+            v-model="globalConfig.open"></div>
         <div style="float: right;"><label for="oc">开启自定义选项 </label><input
             style="width: 1.3rem;height: 1.3rem;vertical-align: sub;" type="checkbox" id="oc"
-            v-model="globalSetting.custom"></div>
+            v-model="globalConfig.custom"></div>
       </h3>
       <hr style="width: 80%;margin: 0 auto;">
       <br>
       <div class="option-row">
-        <div class="option-mask" v-show="!globalSetting.custom || !globalSetting.open"></div>
+        <div class="option-mask" v-show="!globalConfig.custom || !globalConfig.open"></div>
         <div class="option-col">
-          <div class="f-type"><input type="checkbox" id="ci" v-model="globalSetting.changeImg"><label
+          <div class="f-type"><input type="checkbox" id="ci" v-model="globalConfig.changeImg"><label
               for="ci">自定义图案</label></div>
-          <div><input type="checkbox" id="petal" value="petal" v-model="globalSetting.imgSetting" checked
-              :disabled="!globalSetting.changeImg"><label for="petal">花瓣</label> <input style="width: 2.5em;"
-              type="number" v-model="globalSetting.imgNumSetting[0]"
-              :disabled="!globalSetting.imgSetting.includes('petal') || !globalSetting.changeImg"> 个
+          <div><input type="checkbox" id="petal" value="petal" v-model="globalConfig.imgSetting" checked
+              :disabled="!globalConfig.changeImg"><label for="petal">花瓣</label> <input style="width: 2.5em;"
+              type="number" v-model="globalConfig.imgNumSetting[0]"
+              :disabled="!globalConfig.imgSetting.includes('petal') || !globalConfig.changeImg"> 个
           </div>
-          <div><input type="checkbox" id="leaf" value="leaf" v-model="globalSetting.imgSetting"
-              :disabled="!globalSetting.changeImg"><label for="leaf">落叶</label> <input style="width: 2.5em;" type="number"
-              v-model="globalSetting.imgNumSetting[1]"
-              :disabled="!globalSetting.imgSetting.includes('leaf') || !globalSetting.changeImg"> 个
+          <div><input type="checkbox" id="leaf" value="leaf" v-model="globalConfig.imgSetting"
+              :disabled="!globalConfig.changeImg"><label for="leaf">落叶</label> <input style="width: 2.5em;" type="number"
+              v-model="globalConfig.imgNumSetting[1]"
+              :disabled="!globalConfig.imgSetting.includes('leaf') || !globalConfig.changeImg"> 个
           </div>
-          <div><input type="checkbox" id="snow" value="snow" v-model="globalSetting.imgSetting"
-              :disabled="!globalSetting.changeImg"><label for="snow">雪花</label> <input style="width: 2.5em;" type="number"
-              v-model="globalSetting.imgNumSetting[2]"
-              :disabled="!globalSetting.imgSetting.includes('snow') || !globalSetting.changeImg"> 个
+          <div><input type="checkbox" id="snow" value="snow" v-model="globalConfig.imgSetting"
+              :disabled="!globalConfig.changeImg"><label for="snow">雪花</label> <input style="width: 2.5em;" type="number"
+              v-model="globalConfig.imgNumSetting[2]"
+              :disabled="!globalConfig.imgSetting.includes('snow') || !globalConfig.changeImg"> 个
           </div>
-          <div><input type="checkbox" id="rain" value="rain" v-model="globalSetting.imgSetting"
-              :disabled="!globalSetting.changeImg"><label for="rain">雨点</label> <input style="width: 2.5em;" type="number"
-              v-model="globalSetting.imgNumSetting[3]"
-              :disabled="!globalSetting.imgSetting.includes('rain') || !globalSetting.changeImg"> 个
+          <div><input type="checkbox" id="rain" value="rain" v-model="globalConfig.imgSetting"
+              :disabled="!globalConfig.changeImg"><label for="rain">雨点</label> <input style="width: 2.5em;" type="number"
+              v-model="globalConfig.imgNumSetting[3]"
+              :disabled="!globalConfig.imgSetting.includes('rain') || !globalConfig.changeImg"> 个
           </div>
         </div>
         <div class="option-col">
-          <div class="f-show"><input type="checkbox" id="cs" v-model="globalSetting.changeShow"><label
+          <div class="f-show"><input type="checkbox" id="cs" v-model="globalConfig.changeShow"><label
               for="cs">自定义显示</label></div>
-          <div><input type="checkbox" id="fi" v-model="globalSetting.showSetting.fadeIn"
-              :disabled="!globalSetting.changeShow"><label for="fi">淡入</label>
+          <div><input type="checkbox" id="fi" v-model="globalConfig.showSetting.fadeIn"
+              :disabled="!globalConfig.changeShow"><label for="fi">淡入</label>
           </div>
-          <div><input type="checkbox" id="fo" v-model="globalSetting.showSetting.fadeOut"
-              :disabled="!globalSetting.changeShow"><label for="fo">淡出</label>
+          <div><input type="checkbox" id="fo" v-model="globalConfig.showSetting.fadeOut"
+              :disabled="!globalConfig.changeShow"><label for="fo">淡出</label>
           </div>
-          <div><input style="width: 2em;" type="number" v-model="globalSetting.showSetting.time"
-              :disabled="!globalSetting.changeShow || !globalSetting.showSetting.fadeOut"> 秒消失</div>
+          <div><input style="width: 2em;" type="number" v-model="globalConfig.showSetting.time"
+              :disabled="!globalConfig.changeShow || !globalConfig.showSetting.fadeOut"> 秒消失</div>
         </div>
         <div class="option-col">
-          <div class="f-rain"><input type="checkbox" id="cr" v-model="globalSetting.changeRain"><label
+          <div class="f-rain"><input type="checkbox" id="cr" v-model="globalConfig.changeRain"><label
               for="cr">下雨设置</label></div>
-          <div><input style="width: 2.5em;" type="number" v-model="globalSetting.rainSetting.wind_speed"
-              :disabled="!globalSetting.changeRain"> 风力</div>
-          <div><input style="width: 2.5em;" type="number" v-model="globalSetting.rainSetting.wind_angle"
-              :disabled="!globalSetting.changeRain"><span title="从+x方向逆时针的角度，270为垂直向下"> 风向 ❔</span></div>
-          <div><input style="width: 2.5em;" type="number" v-model="globalSetting.rainSetting.wind_speed_x"
-              :disabled="!globalSetting.changeRain"> 横向风误差</div>
-          <div><input type="checkbox" id="bo" v-model="globalSetting.rainSetting.hasBounce"
-              :disabled="!globalSetting.changeRain"><label for="bo">落地水花</label>
+          <div><input style="width: 2.5em;" type="number" v-model="globalConfig.rainSetting.wind_speed"
+              :disabled="!globalConfig.changeRain"> 风力</div>
+          <div><input style="width: 2.5em;" type="number" v-model="globalConfig.rainSetting.wind_angle"
+              :disabled="!globalConfig.changeRain"><span title="从+x方向逆时针的角度，270为垂直向下"> 风向 ❔</span></div>
+          <div><input style="width: 2.5em;" type="number" v-model="globalConfig.rainSetting.wind_speed_x"
+              :disabled="!globalConfig.changeRain"> 横向风误差</div>
+          <div><input type="checkbox" id="bo" v-model="globalConfig.rainSetting.hasBounce"
+              :disabled="!globalConfig.changeRain"><label for="bo">落地水花</label>
           </div>
         </div><!--
         <div class="option-col">
@@ -75,7 +75,7 @@
         </div>-->
       </div>
       <div class="text_area">
-        <p>{{ globalSetting }}</p>
+        <p>{{ globalConfig }}</p>
         <p>每个子自定义开关如未勾选，其设置将不生效，并且以网站默认设置（你最初看到的设置）为准。若未选择图案，将根据季节自动展示。</p>
       </div>
       <div class="btn-list">
@@ -83,7 +83,7 @@
         <button @click="reset()">重置</button>
         <button @click="confirm()">确定</button>
         <button @click="cancel()">取消</button>
-        <button @click="start(globalSetting, masterSetting)">测试</button>
+        <button @click="start(globalConfig, masterConfig)">测试</button>
       </div>
       <div class="link-list">
         <div></div>
@@ -109,9 +109,9 @@ export default {
   emits: ['setting'],
   data() {
     return {
-      globalSetting: {},
-      globalSettingBackup: {},
-      masterSetting: {
+      globalConfig: {},
+      globalConfigBackup: {},
+      masterConfig: {
         open: true,
         custom: true,
         changeImg: true,
@@ -143,7 +143,7 @@ export default {
 
     },
     reset() {
-      this.globalSetting = JSON.parse(JSON.stringify(this.globalSettingBackup))
+      this.globalSetting = JSON.parse(JSON.stringify(this.globalConfigBackup))
     },
     confirm() {
       this.setting2()
@@ -162,29 +162,18 @@ export default {
     },
   },
   created() {
-    this.globalSetting = JSON.parse(JSON.stringify(this.masterSetting))
-    this.globalSettingBackup = JSON.parse(JSON.stringify(this.globalSetting))
+    this.globalConfig = JSON.parse(JSON.stringify(this.masterConfig))
+    this.globalConfigBackup = JSON.parse(JSON.stringify(this.globalConfig))
   },
   mounted() {
     console.log(`The initial.`)
     /**
      * 
      * TO DO
-     * GUI界面
-     * GUI逻辑
-     * js整合配置
-     * 控制z-index
      * GUI可用
      * 容错
-     * 自动跟季节选择
      * 记忆到本地
-     * 
-     * TO DO
-     * GUI界面，可选类型，淡入淡出，记忆设置，是否启用
-     * 自定义：开启关闭每个自定义，自定义图案类型，是否淡入，是否10s淡出，应用/确定/取消
      * 总开关
-     * 
-     * 
      * 支持暗黑模式
      * 
      */
@@ -318,7 +307,6 @@ a {
   min-height: 150px;
   width: 23%;
   margin: 4px 0;
-  /*padding: 8px;*/
   box-sizing: border-box;
   position: relative;
 }
@@ -326,9 +314,9 @@ a {
 .option-col:after {
   content: "";
   position: absolute;
-  right: 0%;
-  top: 12%;
-  height: 80%;
+    right: -18%;
+    top: 8%;
+    height: 70%;
   width: 1px;
   border-left: 2px solid rgba(0, 0, 0, .2);
 }
