@@ -1,4 +1,4 @@
-<mxfile host="app.diagrams.net" modified="2023-08-12T13:13:57.723Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36 Edg/114.0.1823.82" etag="4FZeu1u9gtUzyWG2KO3X" version="21.6.8" type="device">
+<mxfile host="app.diagrams.net" modified="2023-08-13T02:36:46.081Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36 Edg/114.0.1823.82" etag="S1Gw7fvez2lpdmXW-t7s" version="21.6.8" type="device">
   <diagram name="第 1 页" id="Ha-VtkuZgDi8NN0ObizK">
     <mxGraphModel dx="1434" dy="835" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
       <root>
@@ -186,7 +186,7 @@
         <mxCell id="6_2D1eftYS68OU7fFk1C-28" value="只有主人可以" style="whiteSpace=wrap;html=1;strokeColor=#b85450;fontFamily=Helvetica;fontSize=18;fillColor=#f8cecc;" vertex="1" parent="1">
           <mxGeometry x="210" y="1250" width="120" height="60" as="geometry" />
         </mxCell>
-        <mxCell id="6_2D1eftYS68OU7fFk1C-29" value="主人的自定义开关没有用" style="whiteSpace=wrap;html=1;strokeColor=#b85450;fontFamily=Helvetica;fontSize=14;fillColor=#f8cecc;imageWidth=24;" vertex="1" parent="1">
+        <mxCell id="6_2D1eftYS68OU7fFk1C-29" value="主人的自定义开关与子自定义开关&lt;br&gt;没有用" style="whiteSpace=wrap;html=1;strokeColor=#b85450;fontFamily=Helvetica;fontSize=14;fillColor=#f8cecc;imageWidth=24;" vertex="1" parent="1">
           <mxGeometry x="480" y="760" width="120" height="60" as="geometry" />
         </mxCell>
         <mxCell id="6_2D1eftYS68OU7fFk1C-30" value="自定义开关与子自定义开关平级" style="whiteSpace=wrap;html=1;strokeColor=default;fontFamily=Helvetica;fontSize=14;fontColor=default;fillColor=default;imageWidth=24;" vertex="1" parent="1">
@@ -194,6 +194,9 @@
         </mxCell>
         <mxCell id="6_2D1eftYS68OU7fFk1C-31" value="访客表，主人表，默认表，主人表始终覆盖默认表" style="whiteSpace=wrap;html=1;strokeColor=default;fontFamily=Helvetica;fontSize=14;fontColor=default;fillColor=default;imageWidth=24;" vertex="1" parent="1">
           <mxGeometry x="600" y="760" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="6_2D1eftYS68OU7fFk1C-32" value="初始化时访客表复制于主人表，且自定义开关置否" style="whiteSpace=wrap;html=1;strokeColor=default;fontFamily=Helvetica;fontSize=14;fontColor=default;fillColor=default;imageWidth=24;" vertex="1" parent="1">
+          <mxGeometry x="600" y="820" width="120" height="60" as="geometry" />
         </mxCell>
       </root>
     </mxGraphModel>

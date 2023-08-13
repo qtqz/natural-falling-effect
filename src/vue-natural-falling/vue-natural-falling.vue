@@ -76,14 +76,14 @@
       </div>
       <div class="text_area">
         <p>{{ globalSetting }}</p>
-        <p>自定义：开启关闭每个自定义，自定义图案类型，是否淡入，是否10s淡出，应用/确定/取消</p>
+        <p>每个子自定义开关如未勾选，其设置将不生效，并且以网站默认设置（你最初看到的设置）为准。若未选择图案，将根据季节自动展示。</p>
       </div>
       <div class="btn-list">
         <button @click="apply()">应用</button>
         <button @click="reset()">重置</button>
         <button @click="confirm()">确定</button>
         <button @click="cancel()">取消</button>
-        <button @click="start('test', globalSetting, masterSetting)">测试</button>
+        <button @click="start(globalSetting, masterSetting)">测试</button>
       </div>
       <div class="link-list">
         <div></div>
@@ -117,24 +117,24 @@ export default {
         changeImg: true,
         changeShow: true,
         changeRain: true,
-        imgSetting: ['petal'],
+        imgSetting: [],
         imgNumSetting: [50, 50, 80, 80],
         showSetting: {
           fadeIn: true,
           fadeOut: true,
-          time: 20
+          time: 10
         },
         rainSetting: {
           wind_speed: 80,//风力
           wind_speed_x: 5,//横向风力误差
-          wind_angle: 260,//从+x方向逆时针角度，270为垂直向下
+          wind_angle: 255,//从+x方向逆时针角度，270为垂直向下
           hasBounce: true,//落地溅水花
           maxNum: 80,//雨滴数量
-          numLevel: 1,//淡入速度
+          numLevel: 0.04,//淡入速度
           gravity: 0.163//重力
         },
         zIndex: 100,
-        size: [40, 40, 2.5]
+        imgSize: [40, 40, 2.5]
       },
     }
   },
@@ -154,8 +154,8 @@ export default {
     setting2() {
       this.$emit('setting')
     },
-    start(t, s, ms) {
-      Falling2(t, s, ms)
+    start(s, ms) {
+      Falling2(s, ms)
     },
     stop() {
       FallingDestroy()
@@ -180,10 +180,10 @@ export default {
      * 记忆到本地
      * 
      * TO DO
-     * 淡入淡出
      * GUI界面，可选类型，淡入淡出，记忆设置，是否启用
-     * 选项：默认配置（淡入10s淡出，根据季节选择图案）/自定义
      * 自定义：开启关闭每个自定义，自定义图案类型，是否淡入，是否10s淡出，应用/确定/取消
+     * 总开关
+     * 
      * 
      * 支持暗黑模式
      * 
@@ -262,7 +262,7 @@ a {
   margin: 70px auto;
   padding: 2em 4em;
   background-color: rgb(255, 255, 255);
-  border-radius: 6px;
+  border-radius: 8px;
   box-shadow: 2px 2px 15px #aaaaaa;
   transition: box-shadow 0.5s;
   overflow: hidden;
@@ -309,7 +309,7 @@ a {
   justify-content: space-evenly;
   align-content: space-around;
   background-color: #fff9;
-  border-radius: 6px;
+  border-radius: 8px;
   border: 1px solid rgba(255, 255, 255, .8);
   box-shadow: 1px 1px 10px #ccc;
 }

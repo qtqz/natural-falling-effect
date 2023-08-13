@@ -98,8 +98,8 @@ const dealSetting = (t, s, ms) => {
     else if (m >= 9 && m <= 11) imgs = ['leaf']
     else if (m == 12 || m <= 2) imgs = ['snow']
     else if (m >= 6 && m <= 8) imgs = ['rain']
-    //读主人设置
-    if (defaultSetting.changeImg) imgs = defaultSetting.imgSetting
+    //读主人设置, 无视自定义开关
+    imgs = ms.imgSetting
     //读访客设置
     if (s.custom && s.changeImg) imgs = s.imgSetting
     imgsNum = imgs.length
@@ -123,7 +123,7 @@ const createFalling = (t, s, ms) => {
         t = opts.imgSetting.includes('leaf') ? 'leaf' : t
         t = opts.imgSetting.includes('petal') ? 'petal' : t
     }*/
-    var staticx
+    var staticx, timeOver = false, isDestroy = false
     var w = window.innerWidth,
         h = window.innerHeight
     var img = new Image(), img2 = new Image(), img3 = new Image()
@@ -175,9 +175,11 @@ const createFalling = (t, s, ms) => {
         if (
             this.x > w ||
             this.x < 0 ||
-            this.y > h ||
-            this.y < 0
+            this.y > h
+            //为支持淡入，取消此判断
+            // ||this.y < 0
         ) {
+            if (isFadeOut && timeOver) return
             let ran = Math.random()
             if (ran > 0.42) {
                 //0.4//较大可能，顶部任意位置
@@ -223,9 +225,9 @@ const createFalling = (t, s, ms) => {
         this.r = this.fn.r(this.r)
         if (this.x > w ||
             this.x < 0 ||
-            this.y > h ||
-            this.y < 0
+            this.y > h 
         ) {
+            if (isFadeOut && timeOver) return
             let ran = Math.random()
             if (ran > 0.42) {
                 this.x = getRandom('x')
@@ -278,9 +280,9 @@ const createFalling = (t, s, ms) => {
         if (
             this.x > w ||
             this.x < 0 ||
-            this.y > h ||
-            this.y < 0
+            this.y > h 
         ) {
+            if (isFadeOut && timeOver) return
             let ran = Math.random()
             if (ran > 0.42) {
                 this.x = getRandom('x')
@@ -331,6 +333,7 @@ const createFalling = (t, s, ms) => {
         this.x += this.speed_x
         this.y += this.speed_y
         if (this.y > h) {
+            if (isFadeOut && timeOver) return
             this.y = 0
             this.px = this.x
             this.py = this.y
@@ -382,7 +385,29 @@ const createFalling = (t, s, ms) => {
     }
 
 
-    var sNum, sSize
+    var sNum, sSize, isFadeOut, fadeOutTime, isFadeIn
+    if (s.changeShow && s.custom) {
+        if (s.showSetting.time >= 1) {
+            isFadeOut = s.showSetting.fadeOut
+            fadeOutTime = s.showSetting.time
+        } else isFadeOut = false
+    }
+    else if (ms.showSetting.time >= 1) {
+        isFadeOut = ms.showSetting.fadeOut
+        fadeOutTime = ms.showSetting.time
+    } else isFadeOut = false
+    if (isFadeOut) {
+        setTimeout(() => {
+            timeOver = true
+            console.log('timeOver')
+        }, fadeOutTime * 1000)
+        setTimeout(() => {
+            isDestroy = true
+            destroyFalling()
+            console.log('destroy')
+        }, fadeOutTime * 1000 + 10000)
+    }
+    s.changeShow && s.custom ? isFadeIn = s.showSetting.fadeIn : isFadeIn == ms.showSetting.fadeIn
     //每个特别定义
     if (t == 'petal') {
         {
@@ -427,9 +452,9 @@ const createFalling = (t, s, ms) => {
         }
         //有关访客设置，如果访客改了，以访客为准，不然依主人配置（默认配置）
         if (s.changeImg && s.imgNumSetting[0]) sNum = s.imgNumSetting[0]
-        else sNum = defaultSetting.imgNumSetting[0]
+        else sNum = ms.imgNumSetting[0]
         //无关访客设置
-        sSize = defaultSetting.size[0]
+        sSize = ms.size[0]
 
     }
     //leaf，银杏树叶和橘黄枫叶
@@ -479,9 +504,9 @@ const createFalling = (t, s, ms) => {
             return ret
         }
         if (s.changeImg && s.imgNumSetting[1]) sNum = s.imgNumSetting[1]
-        else sNum = defaultSetting.imgNumSetting[1]
+        else sNum = ms.imgNumSetting[1]
         var halfNum = sNum / 2
-        sSize = defaultSetting.size[1]
+        sSize = ms.size[1]
     }
     //snow
     else if (t == 'snow') {
@@ -520,8 +545,8 @@ const createFalling = (t, s, ms) => {
             return ret
         }
         if (s.changeImg && s.imgNumSetting[2]) sNum = s.imgNumSetting[2]
-        else sNum = defaultSetting.imgNumSetting[2]
-        sSize = defaultSetting.size[2]
+        else sNum = ms.imgNumSetting[2]
+        sSize = ms.size[2]
     }
     //rain
     else if (t == 'rain') {
@@ -583,7 +608,7 @@ const createFalling = (t, s, ms) => {
                     randomFny,
                     randomFnR
                 randomX = getRandom('x')
-                randomY = getRandom('y')
+                randomY = isFadeIn ? getRandom('y') - h : getRandom('y')
                 randomR = getRandom('r')
                 randomS = getRandom('s')
                 randomFnx = getRandom('fnx')
@@ -609,7 +634,7 @@ const createFalling = (t, s, ms) => {
                     randomFny,
                     randomFnR
                 randomX = getRandom('x')
-                randomY = getRandom('y')
+                randomY = isFadeIn ? getRandom('y') - h : getRandom('y')
                 randomR = getRandom('r')
                 randomS = getRandom('s')
                 randomFnx = getRandom('fnx')
@@ -635,7 +660,7 @@ const createFalling = (t, s, ms) => {
                     randomFny,
                     randomO
                 randomX = getRandom('x')
-                randomY = getRandom('y')
+                randomY = isFadeIn ? getRandom('y') - h : getRandom('y')
                 randomR = getRandom('r')
                 randomS = getRandom('s')
                 randomO = getRandom('o')
@@ -691,16 +716,26 @@ const createFalling = (t, s, ms) => {
             function asd() {
                 ctx.clearRect(0, 0, canvas.width, canvas.height)
                 updateRain()
+                if (isDestroy) {
+                    window.cancelAnimationFrame(stop)
+                    window.cancelAnimationFrame(stop + 1)
+                    return
+                }
                 stop = requestAnimationFrame(asd)
             };
         }
         else {
             stop = requestAnimationFrame(asd)
             function asd() {
-                //console.log(1)
+                console.log(1)
                 ctx.clearRect(0, 0, canvas.width, canvas.height)
                 fallingList.update()
                 fallingList.draw(ctx)
+                if (isDestroy) {
+                    window.cancelAnimationFrame(stop)
+                    window.cancelAnimationFrame(stop + 1)
+                    return
+                }
                 stop = requestAnimationFrame(asd)
             }
         }
