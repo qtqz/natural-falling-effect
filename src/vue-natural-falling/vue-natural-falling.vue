@@ -1,15 +1,9 @@
 <template>
   <div class="nf-container">
     <div class="nf-mask" @click="cancel()"></div>
-    <div class="nf-button" @click="turn()">
-      <img style="width: 64px;height: 64px;" src="./icon.png" alt="" srcset="">
-    </div><!--
-    <button @click="start('petal')">落花</button>
-    <button @click="start('leaf')">落叶</button>
-    <button @click="start('snow')">下雪</button>
-    <button @click="start('rain', guestConfig.rainSetting)">下雨</button>
-    <button @click="stop()">停止</button>
-    <button @click="setting2()">选项</button>-->
+    <div class="nf-button" @click="turn()" title="自然飘落效果开关">
+      <img style="width: 48px;height: 48px;" src="./icon.png" alt="">
+    </div>
     <div class="nf-main" :class="showWindow ? '' : 'hide'">
       <h2>设定</h2>
       <h3 style="width: 100%;padding: 0 1rem;">
@@ -75,7 +69,7 @@
         </div>
       </div>
       <div class="text_area">
-        <p>{{ guestConfig }}</p>
+        <p v-show="false">{{ guestConfig }}</p>
         <p>每个子自定义开关如未勾选，其设置将不生效，并且以网站默认设置（你最初看到的设置）为准。若未选择图案，将根据季节自动展示。所有配置将被保存到本地。</p>
       </div>
       <div class="btn-list">
@@ -97,14 +91,12 @@
           </svg><span><a href="#" target="_blank" rel="noopener noreferrer">github-</a></span>
         </div>
       </div>
-
     </div>
   </div>
 </template>
 
 <script>
-// eslint-disable-next-line no-unused-vars
-import { FallingCreate, FallingDirect, FallingDestroy } from './naturalfalling.js';
+import { FallingCreate, FallingDestroy } from './naturalfalling.js';
 
 export default {
   name: 'vue-natural-falling',
@@ -119,20 +111,20 @@ export default {
         changeShow: true,
         changeRain: true,
         imgSetting: [],
-        imgNumSetting: [50, 50, 80, 80],
+        imgNumSetting: [40, 40, 80, 60],
         showSetting: {
           fadeIn: true,
           fadeOut: false,
-          time: 10
+          time: 20
         },
         rainSetting: {
-          wind_speed: 80,//风力
-          wind_speed_x: 5,//横向风力误差
-          wind_angle: 255,//从+x方向逆时针角度，270为垂直向下
-          hasBounce: true,//落地溅水花
-          maxNum: 80,//雨滴数量
-          numLevel: 0.04,//淡入速度
-          gravity: 0.163//重力
+          wind_speed: 75,
+          wind_speed_x: 4,
+          wind_angle: 255,
+          hasBounce: true,
+          maxNum: 80,
+          numLevel: 0.03,
+          gravity: 0.163
         },
         zIndex: 100,
         imgSize: [40, 40, 2.5]
@@ -141,11 +133,11 @@ export default {
   },
   methods: {
     apply() {
-      localStorage.setItem("guestConfig", this.guestConfig)
+      localStorage.setItem("guestConfig", JSON.stringify(this.guestConfig))
       localStorage.setItem("guestConfigVersion", 1)
       this.stop()
       setTimeout(() => {
-        this.start(this.guestConfig, this.masterConfig)
+        this.start(this.masterConfig, this.guestConfig)
       }, 1000)
     },
     reset() {
@@ -155,12 +147,7 @@ export default {
     },
     confirm() {
       this.showWindow = false
-      localStorage.setItem("guestConfig", this.guestConfig)
-      localStorage.setItem("guestConfigVersion", 1)
-      this.stop()
-      setTimeout(() => {
-        this.start(this.guestConfig, this.masterConfig)
-      }, 1000)
+      this.apply()
     },
     cancel() {
       this.showWindow = false
@@ -168,8 +155,8 @@ export default {
     turn() {
       this.showWindow = !this.showWindow
     },
-    start(s, ms) {
-      FallingCreate(s, ms)
+    start(ms, s) {
+      FallingCreate(ms, s)
     },
     stop() {
       for (let i = 0; i < 4; i++) FallingDestroy()
@@ -180,25 +167,19 @@ export default {
   },
   mounted() {
     console.log(`The initial.`)
-    let hc = localStorage.getItem("guestConfigVersion") == 1 ? localStorage.getItem("guestConfig") : null
+    let hc = localStorage.getItem("guestConfigVersion") == 1 ? this.guestConfig = JSON.parse(localStorage.getItem("guestConfig")) : this.reset()
     if (hc == null) {
       this.guestConfig.custom = false
       this.guestConfig.changeImg = false
       this.guestConfig.changeShow = false
       this.guestConfig.changeRain = false
     }
-    setTimeout(() => {
-      this.start(this.guestConfig, this.masterConfig)
-    }, 1000)
+    this.start(this.masterConfig, this.guestConfig)
     /**
      * 
      * TO DO
-     * GUI可用
-     * 容错
-     * 记忆到本地
-     * 总开关
-     * 按钮
      * 支持暗黑模式
+     * 简洁模式（仅允许用户总开关）
      * 
      */
   },
@@ -206,11 +187,36 @@ export default {
 </script>
   
 <style scoped>
+.dark .nf-button {
+  background-color: rgba(255, 255, 255, 0.7);
+}
+
+.dark .nf-main {
+  background-color: rgb(37, 45, 56);
+  box-shadow: 2px 2px 15px #111;
+  color: rgba(255, 255, 255, 0.86);
+}
+
+.dark .option-row {
+  background-color: rgb(37, 45, 56);
+  box-shadow: 2px 2px 15px #111;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+}
+
+.dark .text_area {
+  border: 1px solid rgba(0, 0, 0, 0.7);
+}
+
+.dark .option-row::after {
+  border-left: 2px solid rgba(255, 255, 255, 0.6);
+}
+
 .nf-button {
+  box-sizing: content-box;
   position: fixed;
   bottom: 10vh;
   right: 2.5vw;
-  height: 64px;
+  height: 48px;
   background-color: rgba(255, 255, 255, 0.3);
   /* background-color: #fcfcfc; */
   border-radius: 50%;
@@ -229,7 +235,7 @@ export default {
   width: 100%;
   height: 100%;
   border-radius: 50%;
-  box-shadow: 6px 5px 8px 4px rgba(150, 150, 150, 0.3);
+  box-shadow: 5px 4px 8px 3px rgba(150, 150, 150, 0.2);
   border: 1px rgb(255, 255, 255) solid;
 }
 
@@ -315,12 +321,12 @@ a {
   width: 800px;
   width: 780px;
   min-height: 600px;
-  top: 70px;
+  top: 60px;
   left: 50vw;
   top: 50vh;
   transform: translate(-50%, -50%);
   /* margin: 0 auto 0 auto; */
-  padding: 2em 4em;
+  padding: 2em 4em 3em 4em;
   background-color: rgb(255, 255, 255);
   border-radius: 10px;
   box-shadow: 2px 2px 15px #aaaaaa;
@@ -373,7 +379,7 @@ a {
   flex-wrap: wrap;
   justify-content: space-evenly;
   align-content: space-around;
-  background-color: #fff9;
+  background-color: #ffff;
   border-radius: 8px;
   border: 1px solid rgba(255, 255, 255, .8);
   box-shadow: 1px 1px 10px #ccc;
