@@ -72,7 +72,7 @@ const destroyFalling = () => {
  * 用于判断图案类型
  */
 const readyCreate = (c, mc) => {
-    //if (!s.open) return不应在这里判断
+    if (!c.open) return
     var imgs
     var date = new Date()
     var m = date.getMonth() + 1
@@ -428,7 +428,7 @@ const createFalling = (t, c, mc) => {
             return ret
         }
         //有关访客设置，如果访客改了，以访客为准，不然依主人配置（默认配置）
-        if (c.changeImg && c.imgNumSetting[0]) sNum = c.imgNumSetting[0]
+        if (c.changeImg && c.custom && c.imgNumSetting[0]) sNum = c.imgNumSetting[0]
         else sNum = mc.imgNumSetting[0]
         //无关访客设置
         sSize = mc.imgSize[0]
@@ -480,7 +480,7 @@ const createFalling = (t, c, mc) => {
             }
             return ret
         }
-        if (c.changeImg && c.imgNumSetting[1]) sNum = c.imgNumSetting[1]
+        if (c.changeImg && c.custom && c.imgNumSetting[1]) sNum = c.imgNumSetting[1]
         else sNum = mc.imgNumSetting[1]
         var halfNum = sNum / 2
         sSize = mc.imgSize[1]
@@ -521,7 +521,7 @@ const createFalling = (t, c, mc) => {
             }
             return ret
         }
-        if (c.changeImg && c.imgNumSetting[2]) sNum = c.imgNumSetting[2]
+        if (c.changeImg && c.custom && c.imgNumSetting[2]) sNum = c.imgNumSetting[2]
         else sNum = mc.imgNumSetting[2]
         sSize = mc.imgSize[2]
     }
@@ -531,14 +531,18 @@ const createFalling = (t, c, mc) => {
         var drops = [], bounces = []
         var DPR = window.devicePixelRatio
         var wind_speed, wind_speed_x, wind_angle, hasBounce, numLevel, gravity
-        wind_speed = c.rainSetting.wind_speed || mc.rainSetting.wind_speed
-        wind_speed_x = c.rainSetting.wind_speed_x || mc.rainSetting.wind_speed_x
-        wind_angle = c.rainSetting.wind_angle || mc.rainSetting.wind_angle
-        hasBounce = c.rainSetting.hasBounce == undefined ? mc.rainSetting.hasBounce : c.rainSetting.hasBounce
-        if (c.changeImg && c.imgNumSetting[3]) sNum = c.imgNumSetting[3]
+        if (c.changeRain && c.custom && c.rainSetting.wind_speed) wind_speed = c.rainSetting.wind_speed
+        else wind_speed = mc.rainSetting.wind_speed
+        if (c.changeRain && c.custom && c.rainSetting.wind_speed_x) wind_speed_x = c.rainSetting.wind_speed_x
+        else  wind_speed_x = mc.rainSetting.wind_speed_x
+        if (c.changeRain && c.custom && c.rainSetting.wind_angle) wind_angle = c.rainSetting.wind_angle
+        else wind_angle = mc.rainSetting.wind_angle
+        if(c.changeRain && c.custom) hasBounce = c.rainSetting.hasBounce == undefined ? mc.rainSetting.hasBounce : c.rainSetting.hasBounce
+        else hasBounce = mc.rainSetting.hasBounce
+        if (c.changeImg && c.custom && c.imgNumSetting[3]) sNum = c.imgNumSetting[3]
         else sNum = mc.imgNumSetting[3]
-        numLevel = c.rainSetting.numLevel || mc.rainSetting.numLevel
-        gravity = c.rainSetting.gravity || mc.rainSetting.gravity
+        numLevel = mc.rainSetting.numLevel
+        gravity = mc.rainSetting.gravity
         //将角度乘 0.017453293 （2PI/360）可转换为弧度。
         var eachAnger = 0.017453293;
         var a2 = wind_angle * eachAnger
@@ -719,6 +723,6 @@ const createFalling = (t, c, mc) => {
     startFall(t)
 }
 //
-export const Falling2 = readyCreate
-export const Falling = createFalling
+export const FallingCreate = readyCreate
+export const FallingDirect = createFalling
 export const FallingDestroy = destroyFalling

@@ -1,5 +1,5 @@
 <template>
-  <vueNaturalFalling :openSetting="openSetting" @setting="setting"/>
+  <vueNaturalFalling/>
 </template>
 <script>
 import vueNaturalFalling from './vue-natural-falling/vue-natural-falling.vue'
@@ -11,19 +11,17 @@ export default {
   },
   data() {
     return {
-      openSetting:true
+
     }
   },
   methods: {
-    setting() {
-      this.openSetting = !this.openSetting
-    },
+
   },
   created() {
 
   },
   mounted() {
-    //console.log(`The initial.`)
+
   },
 }
 </script>
@@ -31,5 +29,8 @@ export default {
 <style>
 body {
   margin: 0;
+  background-image: url('./vue-natural-falling/background.png');
+  width: 100%;
+  min-height: 100vh;
 }
 </style>
