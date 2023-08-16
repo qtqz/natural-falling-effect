@@ -2,7 +2,7 @@
   <div class="nf-container">
     <div class="nf-mask" @click="cancel()"></div>
     <div class="nf-button" @click="turn()" title="自然飘落效果开关">
-      <img style="width: 48px;height: 48px;" src="./icon.png" alt="">
+      <img style="width: 48px;height: 48px;user-select: none;" src="./icon.png" alt="">
     </div>
     <div class="nf-main" :class="showWindow ? '' : 'hide'">
       <h2>设定</h2>
@@ -77,11 +77,11 @@
         <button @click="reset()">重置</button>
         <button @click="confirm()">确定</button>
         <button @click="cancel()">取消</button>
-        <button @click="start(guestConfig, masterConfig)">测试</button>
       </div>
       <div class="link-list">
         <div style="float: left;">
-          <img style="vertical-align: middle;" src="./icon.png" alt=""><span>自然飘落效果组件</span>
+          <img style="vertical-align: middle;" src="./icon.png" alt=""><span>自然飘落效果组件 </span><span class="v">{{ myVersion
+          }}</span> - <span class="v">{{ jsVersion }}</span>
         </div>
         <div style="float: right;">
           <svg style="vertical-align: middle;" xmlns="http://www.w3.org/2000/svg" width="32" height="32"
@@ -96,7 +96,7 @@
 </template>
 
 <script>
-import { FallingCreate, FallingDestroy } from './naturalfalling.js';
+import { FallingCreate, FallingDestroy } from './js/naturalfalling.js';
 
 export default {
   name: 'vue-natural-falling',
@@ -129,6 +129,8 @@ export default {
         zIndex: 100,
         imgSize: [40, 40, 2.5]
       },
+      myVersion: '1.0.0',
+      jsVersion: '0.1.0',
     }
   },
   methods: {
@@ -178,8 +180,8 @@ export default {
     /**
      * 
      * TO DO
-     * 支持暗黑模式
      * 简洁模式（仅允许用户总开关）
+     * 适配移动端
      * 
      */
   },
@@ -187,6 +189,16 @@ export default {
 </script>
   
 <style scoped>
+.v {
+  border: 2px rgba(205, 205, 205, 0.5) solid;
+  border-radius: 4px;
+  font-family: 'Times New Roman', Times, serif;
+  border: 2px rgba(205, 205, 205, 0.6) solid;
+  font-family: 'Times New Roman', Times, serif;
+  font-style: italic;
+  padding: 0 0.3em !important;
+}
+
 .dark .nf-button {
   background-color: rgba(255, 255, 255, 0.7);
 }
@@ -207,8 +219,8 @@ export default {
   border: 1px solid rgba(0, 0, 0, 0.7);
 }
 
-.dark .option-row::after {
-  border-left: 2px solid rgba(255, 255, 255, 0.6);
+.dark .option-col:after {
+  border-left: 2px solid rgba(255, 255, 255, 0.5);
 }
 
 .nf-button {
@@ -309,9 +321,6 @@ a {
 }
 
 .nf-container {
-  /*background-image: url('./background.png');
-  width: 100%;
-  min-height: 100vh;*/
   position: relative;
 }
 
@@ -335,6 +344,7 @@ a {
   align-items: center;
   transition: opacity 0.2s;
   opacity: 1;
+  z-index: 11;
 }
 
 .hide {

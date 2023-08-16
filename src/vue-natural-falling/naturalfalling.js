@@ -68,6 +68,9 @@ const destroyFalling = () => {
     if (createdFalling && createdFalling.parentNode) {
         window.cancelAnimationFrame(stopId)
         window.cancelAnimationFrame(stopId + 1)
+        window.cancelAnimationFrame(stopId + 2)
+        window.cancelAnimationFrame(stopId + 3)
+        window.cancelAnimationFrame(stopId + 4)
         createdFalling.parentNode.removeChild(createdFalling)
     }
 }
@@ -78,8 +81,9 @@ const destroyFalling = () => {
  * 用于判断图案类型
  */
 const readyCreate = (mc, c) => {
-    //兼容纯js使用，调换c和mc的顺序
+    //兼容无访客配置使用，调换c和mc的顺序
     if (c != undefined) if (!c.open) return
+    if (c == undefined) c = mc
     var imgs
     var date = new Date()
     var m = date.getMonth() + 1
@@ -168,29 +172,18 @@ const createFalling = (t, mc, c) => {
         this.x = this.fn.x(this.x, this.y)
         this.y = this.fn.y(this.y, this.y)
         this.r = this.fn.r(this.r)
-        if (
-            this.x > w ||
-            this.x < 0 ||
-            this.y > h
-            //为支持淡入，取消此判断
-            // ||this.y < 0
-        ) {
+        //为支持淡入，取消判断this.y < 0
+        if (this.y > h) {
             if (isFadeOut && isTimeOver) return
-            this.s = getRandom('s')
-            let ran = Math.random()
-            if (ran > 0.42) {
-                //0.4//较大可能，顶部任意位置
-                this.x = getRandom('x')
-                this.y = 0
-            } else if (ran < 0.21) {
-                //右侧任意位置
-                this.x = window.innerWidth
-                this.y = getRandom('y')
-            } else {
-                //左侧任意位置
-                this.x = 0
-                this.y = getRandom('y')
-            }
+            this.x = getRandom('x')
+            this.y = 0
+        }
+        if (this.x > w) {
+            if (isFadeOut && isTimeOver) return
+            this.x = 0
+        } else if (this.x < 0) {
+            if (isFadeOut && isTimeOver) return
+            this.x = w
         }
     }
 
@@ -223,23 +216,17 @@ const createFalling = (t, mc, c) => {
         this.x = this.fn.x(this.x, this.y)
         this.y = this.fn.y(this.y, this.y)
         this.r = this.fn.r(this.r)
-        if (this.x > w ||
-            this.x < 0 ||
-            this.y > h
-        ) {
+        if (this.y > h) {
             if (isFadeOut && isTimeOver) return
-            this.s = getRandom('s')
-            let ran = Math.random()
-            if (ran > 0.42) {
-                this.x = getRandom('x')
-                this.y = 0
-            } else if (ran < 0.21) {
-                this.x = window.innerWidth
-                this.y = getRandom('y')
-            } else {
-                this.x = 0
-                this.y = getRandom('y')
-            }
+            this.x = getRandom('x')
+            this.y = 0
+        }
+        if (this.x > w) {
+            if (isFadeOut && isTimeOver) return
+            this.x = 0
+        } else if (this.x < 0) {
+            if (isFadeOut && isTimeOver) return
+            this.x = w
         }
     }
 
@@ -270,24 +257,20 @@ const createFalling = (t, mc, c) => {
     Snow.prototype.update = function () {
         this.x = this.fn.x(this.x, this.y)
         this.y = this.fn.y(this.y, this.y)
-        if (
-            this.x > w ||
-            this.x < 0 ||
-            this.y > h
-        ) {
+        if (this.y > h) {
+            if (isFadeOut && isTimeOver) return
+            this.x = getRandom('x')
+            this.r = getRandom('r')
+            this.y = 0
+        }
+        if (this.x > w) {
             if (isFadeOut && isTimeOver) return
             this.r = getRandom('r')
-            let ran = Math.random()
-            if (ran > 0.42) {
-                this.x = getRandom('x')
-                this.y = 0
-            } else if (ran < 0.21) {
-                this.x = window.innerWidth
-                this.y = getRandom('y')
-            } else {
-                this.x = 0
-                this.y = getRandom('y')
-            }
+            this.x = 0
+        } else if (this.x < 0) {
+            if (isFadeOut && isTimeOver) return
+            this.r = getRandom('r')
+            this.x = w
         }
     }
 
@@ -322,6 +305,7 @@ const createFalling = (t, mc, c) => {
         if (this.y > h) {
             //只处理超过底部的雨，溅水花，在别处处理超过两侧的雨
             if (isFadeOut && isTimeOver) return
+            this.x = w * Math.random()
             this.y = 0
             this.px = this.x
             this.py = this.y
@@ -719,6 +703,9 @@ const createFalling = (t, mc, c) => {
                 if (isDestroy) {
                     window.cancelAnimationFrame(stopId)
                     window.cancelAnimationFrame(stopId + 1)
+                    window.cancelAnimationFrame(stopId + 2)
+                    window.cancelAnimationFrame(stopId + 3)
+                    window.cancelAnimationFrame(stopId + 4)
                     return
                 }
                 stopId = requestAnimationFrame(asd)
@@ -734,6 +721,9 @@ const createFalling = (t, mc, c) => {
                 if (isDestroy) {
                     window.cancelAnimationFrame(stopId)
                     window.cancelAnimationFrame(stopId + 1)
+                    window.cancelAnimationFrame(stopId + 2)
+                    window.cancelAnimationFrame(stopId + 3)
+                    window.cancelAnimationFrame(stopId + 4)
                     return
                 }
                 stopId = requestAnimationFrame(asd)
