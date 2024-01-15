@@ -4,17 +4,28 @@
   "private": false,
   "type": "module",
   "main": "./vue-natural-falling.vue",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/qtqz/vue-natural-falling.git"
+  },
   "exports": {
     ".": {
       "require": "./vue-natural-falling.vue",
       "import": "./vue-natural-falling.vue"
-    },
-    "./purejs": {
-      "require": "./naturalfalling.js",
-      "import": "./naturalfalling.js"
     }
-   },
+  },
   "scripts": {},
-  "dependencies": {},
-  "devDependencies": {}
+  "dependencies": {
+    "vue": "^3.3.4",
+    "natural-falling-js": "workspace:^"
+  },
+  "devDependencies": {
+    "@rushstack/eslint-patch": "^1.3.2",
+    "@vitejs/plugin-vue": "^4.2.3",
+    "@vue/eslint-config-prettier": "^8.0.0",
+    "eslint": "^8.45.0",
+    "eslint-plugin-vue": "^9.15.1",
+    "prettier": "^3.0.0",
+    "vite": "^4.4.6"
+  }
 }

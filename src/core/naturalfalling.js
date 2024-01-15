@@ -21,21 +21,35 @@
  * 
  * 更多描述见github
  * 
- * edited by qztx(qtqz) 2023.8.8
+ * edited by qtqz 2023.8.8
  * 改为普通js模块
  * 加大花瓣最小速度和大小
  * 往左飘改为随机往左右飘
  * 可以停止飘落
  * 优化性能
  * 
- * edited by qztx(qtqz) 2023.8.11
+ * edited by qtqz 2023.8.11
  * 整合落花落叶下雪下雨
  * 
- * edited by qztx(qtqz) 2023.8.13
+ * edited by qtqz 2023.8.13
  * 接受配置
+ * 
+ * 2024.1.14
+ * 项目重启，作为pnpm子库
+ * 
+ * 
+ * 
+ * 下一步
+ * 
+ * 
+ * 适配移动端
+ * 
+ * 
+ * 
+ * 
  */
 
-//仅用于注释
+//仅用于注释，不会被用到
 const defaultConfig = {
     open: true,//总开关
     custom: true,//总自定义开关，仅访客的有效

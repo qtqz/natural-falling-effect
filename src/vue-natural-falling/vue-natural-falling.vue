@@ -12,9 +12,9 @@
         </div>
         <div style="float: right;"><label for="oc">开启自定义选项 </label><input
             style="width: 1.3rem;height: 1.3rem;vertical-align: sub;" type="checkbox" id="oc"
-            v-model="guestConfig.custom"></div>
+            v-model="guestConfig.custom" :disabled="open"></div>
       </h3>
-      <hr style="width: 80%;margin: 0 auto;">
+      <hr style="width: 96%;margin: 0 auto;">
       <br>
       <div class="option-row">
         <div class="option-mask" v-show="!guestConfig.custom || !guestConfig.open"></div>
@@ -22,22 +22,22 @@
           <div class="f-type"><input type="checkbox" id="ci" v-model="guestConfig.changeImg"><label for="ci">自定义图案</label>
           </div>
           <div><input type="checkbox" id="petal" value="petal" v-model="guestConfig.imgSetting" checked
-              :disabled="!guestConfig.changeImg"><label for="petal">花瓣</label> <input style="width: 2.5em;" type="number"
+              :disabled="!guestConfig.changeImg"><label for="petal">花瓣</label> <input style="width: 3em;" type="number"
               v-model="guestConfig.imgNumSetting[0]"
               :disabled="!guestConfig.imgSetting.includes('petal') || !guestConfig.changeImg"> 个
           </div>
           <div><input type="checkbox" id="leaf" value="leaf" v-model="guestConfig.imgSetting"
-              :disabled="!guestConfig.changeImg"><label for="leaf">落叶</label> <input style="width: 2.5em;" type="number"
+              :disabled="!guestConfig.changeImg"><label for="leaf">落叶</label> <input style="width: 3em;" type="number"
               v-model="guestConfig.imgNumSetting[1]"
               :disabled="!guestConfig.imgSetting.includes('leaf') || !guestConfig.changeImg"> 个
           </div>
           <div><input type="checkbox" id="snow" value="snow" v-model="guestConfig.imgSetting"
-              :disabled="!guestConfig.changeImg"><label for="snow">雪花</label> <input style="width: 2.5em;" type="number"
+              :disabled="!guestConfig.changeImg"><label for="snow">雪花</label> <input style="width: 3em;" type="number"
               v-model="guestConfig.imgNumSetting[2]"
               :disabled="!guestConfig.imgSetting.includes('snow') || !guestConfig.changeImg"> 个
           </div>
           <div><input type="checkbox" id="rain" value="rain" v-model="guestConfig.imgSetting"
-              :disabled="!guestConfig.changeImg"><label for="rain">雨点</label> <input style="width: 2.5em;" type="number"
+              :disabled="!guestConfig.changeImg"><label for="rain">雨点</label> <input style="width: 3em;" type="number"
               v-model="guestConfig.imgNumSetting[3]"
               :disabled="!guestConfig.imgSetting.includes('rain') || !guestConfig.changeImg"> 个
           </div>
@@ -51,17 +51,17 @@
           <div><input type="checkbox" id="fo" v-model="guestConfig.showSetting.fadeOut"
               :disabled="!guestConfig.changeShow"><label for="fo">淡出</label>
           </div>
-          <div><input style="width: 2em;" type="number" v-model="guestConfig.showSetting.time"
+          <div><input style="width: 2.5em;" type="number" v-model="guestConfig.showSetting.time"
               :disabled="!guestConfig.changeShow || !guestConfig.showSetting.fadeOut"> 秒消失</div>
         </div>
         <div class="option-col">
           <div class="f-rain"><input type="checkbox" id="cr" v-model="guestConfig.changeRain"><label for="cr">下雨设置</label>
           </div>
-          <div><input style="width: 2.5em;" type="number" v-model="guestConfig.rainSetting.wind_speed"
+          <div><input style="width: 3em;" type="number" v-model="guestConfig.rainSetting.wind_speed"
               :disabled="!guestConfig.changeRain"> 风力</div>
-          <div><input style="width: 2.5em;" type="number" v-model="guestConfig.rainSetting.wind_angle"
+          <div><input style="width: 3em;" type="number" v-model="guestConfig.rainSetting.wind_angle"
               :disabled="!guestConfig.changeRain"><span title="从+x方向逆时针的角度，270为垂直向下"> 风向 ❔</span></div>
-          <div><input style="width: 2.5em;" type="number" v-model="guestConfig.rainSetting.wind_speed_x"
+          <div><input style="width: 3em;" type="number" v-model="guestConfig.rainSetting.wind_speed_x"
               :disabled="!guestConfig.changeRain"> 横向风误差</div>
           <div><input type="checkbox" id="bo" v-model="guestConfig.rainSetting.hasBounce"
               :disabled="!guestConfig.changeRain"><label for="bo">落地水花</label>
@@ -80,8 +80,9 @@
       </div>
       <div class="link-list">
         <div style="float: left;">
-          <img style="vertical-align: middle;" src="./icon.png" alt=""><span>自然飘落效果组件 </span><span class="v">{{ myVersion
-          }}</span> - <span class="v">{{ jsVersion }}</span>
+          <img style="vertical-align: middle;" src="./icon.png" alt=""><span>自然飘落效果组件 </span><span class="v"
+            title="GUI版本">{{ myVersion
+            }}</span> - <span class="v" title="核心js版本" style="color: #FF9800;">{{ jsVersion }}</span>
         </div>
         <div style="float: right;">
           <svg style="vertical-align: middle;" xmlns="http://www.w3.org/2000/svg" width="32" height="32"
@@ -96,39 +97,50 @@
 </template>
 
 <script>
-import { FallingCreate, FallingDestroy } from './js/naturalfalling.js';
+import { FallingCreate, FallingDestroy } from 'natural-falling-js';
 
 export default {
   name: 'vue-natural-falling',
+  props: {
+    masterConfig: {
+      type: Object,
+      default() {
+        return {
+          open: true,
+          custom: true,
+          changeImg: true,
+          changeShow: true,
+          changeRain: true,
+          imgSetting: [],
+          imgNumSetting: [40, 40, 80, 60],
+          showSetting: {
+            fadeIn: true,
+            fadeOut: false,
+            time: 20
+          },
+          rainSetting: {
+            wind_speed: 75,
+            wind_speed_x: 4,
+            wind_angle: 255,
+            hasBounce: true,
+            maxNum: 80,
+            numLevel: 0.03,
+            gravity: 0.163
+          },
+          zIndex: 100,
+          imgSize: [40, 40, 2.5]
+        }
+      }
+    },
+    mode: {
+
+    }
+  },
   data() {
     return {
       showWindow: true,
       guestConfig: {},
-      masterConfig: {
-        open: true,
-        custom: true,
-        changeImg: true,
-        changeShow: true,
-        changeRain: true,
-        imgSetting: [],
-        imgNumSetting: [40, 40, 80, 60],
-        showSetting: {
-          fadeIn: true,
-          fadeOut: false,
-          time: 20
-        },
-        rainSetting: {
-          wind_speed: 75,
-          wind_speed_x: 4,
-          wind_angle: 255,
-          hasBounce: true,
-          maxNum: 80,
-          numLevel: 0.03,
-          gravity: 0.163
-        },
-        zIndex: 100,
-        imgSize: [40, 40, 2.5]
-      },
+      /*masterConfig: ,*/
       myVersion: '1.0.0',
       jsVersion: '0.1.0',
     }
@@ -181,7 +193,9 @@ export default {
      * 
      * TO DO
      * 简洁模式（仅允许用户总开关）
+     * 自定义外部按钮
      * 适配移动端
+     * 可以配置风的方向
      * 
      */
   },
