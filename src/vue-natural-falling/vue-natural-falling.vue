@@ -11,8 +11,8 @@
             style="width: 1.3rem;height: 1.3rem;vertical-align: sub;" type="checkbox" id="ts" v-model="guestConfig.open">
         </div>
         <div style="float: right;"><label for="oc">开启自定义选项 </label><input
-            style="width: 1.3rem;height: 1.3rem;vertical-align: sub;" type="checkbox" id="oc"
-            v-model="guestConfig.custom" :disabled="open"></div>
+            style="width: 1.3rem;height: 1.3rem;vertical-align: sub;" type="checkbox" id="oc" v-model="guestConfig.custom"
+            :disabled="guestConfig.open"></div>
       </h3>
       <hr style="width: 96%;margin: 0 auto;">
       <br>
@@ -97,7 +97,8 @@
 </template>
 
 <script>
-import { FallingCreate, FallingDestroy } from 'natural-falling-js';
+import { FallingCreate, FallingDestroy, version } from 'natural-falling-js';
+//import { FallingCreate, FallingDestroy, version } from '../core/naturalfalling2.js';
 
 export default {
   name: 'vue-natural-falling',
@@ -141,8 +142,8 @@ export default {
       showWindow: true,
       guestConfig: {},
       /*masterConfig: ,*/
-      myVersion: '1.0.0',
-      jsVersion: '0.1.0',
+      myVersion: '0.4.1',
+      jsVersion: version,
     }
   },
   methods: {
@@ -411,7 +412,7 @@ a {
 
 .option-col {
   min-height: 150px;
-  width: 23%;
+  width: 24%;
   margin: 4px 0;
   box-sizing: border-box;
   position: relative;
