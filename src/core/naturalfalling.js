@@ -2,9 +2,8 @@
 /* eslint-disable */
 /**
  * @name naturalfalling.js
- * @version 1.0.0
+ * @version 0.6.0
  * @date 2023.8.14
- * @requires vue-natural-falling or only js
  * @author 轻稚天雪 (qtqz)
  * @license MIT
  * @param {Object} mc master config，主人配置
@@ -46,6 +45,7 @@
  * 数值校验：vue
  * 适配移动端
  * 自定义按钮
+ * 结束方案，可能无法结束
  * 
  * 
  * 
@@ -53,7 +53,7 @@
  */
 
 //
-export const version = '0.6.0'
+export const version = '0.7.0'
 const defaultConfig = {
     open: true,//总开关
     custom: true,//总自定义开关，仅访客的有效，如果单独使用js，访客不能自定义
@@ -79,17 +79,12 @@ const defaultConfig = {
     zIndex: 100,//自定义canvas的css z-index，可以实现不遮挡网页正文
     imgSize: [40, 40, 2.5]//图案大小（花瓣，树叶，天雪），访客不可修改，雨滴的大小跟风力有关
 }
-const id = 'canvas_natural_falling'
-var stopId
-const destroyFalling = () => {
-    const createdFalling = document.getElementById(id)
-    if (createdFalling && createdFalling.parentNode) {
-        window.cancelAnimationFrame(stopId)
-        window.cancelAnimationFrame(stopId + 1)
-        window.cancelAnimationFrame(stopId + 2)
-        window.cancelAnimationFrame(stopId + 3)
-        window.cancelAnimationFrame(stopId + 4)
-        createdFalling.parentNode.removeChild(createdFalling)
+const id = 'canvas_natural_falling'//+'_type'+'_'+t
+const destroyFalling = (t) => {
+    isDestroyed = true
+    for (let i = 0; i < 4; i++) {
+        const createdFalling = document.getElementById(id)
+        if (createdFalling) createdFalling.remove()
     }
 }
 
@@ -116,6 +111,38 @@ const readyCreate = (mc, c) => {
         else if (m == 12 || m <= 2) imgs = ['snow']
         else if (m >= 6 && m <= 8) imgs = ['rain']
     }
+
+    w = window.innerWidth
+    h = window.innerHeight
+    sSize1 = mc.imgSize[0]
+    sSize2 = mc.imgSize[1]
+    sSize4 = mc.imgSize[2]
+
+    //淡出，访客改了依访客，不然依主人
+    if (c.changeShow && c.custom) {
+        if (c.showSetting.time >= 1) {
+            isFadeOut = c.showSetting.fadeOut
+            fadeOutTime = c.showSetting.time
+        } else isFadeOut = false
+    }
+    else if (mc.showSetting.time >= 1) {
+        isFadeOut = mc.showSetting.fadeOut
+        fadeOutTime = mc.showSetting.time
+    } else isFadeOut = false
+    if (isFadeOut) {
+        setTimeout(() => {
+            isTimeOver = true
+            //console.log('timeOver')
+        }, fadeOutTime * 1000)
+        setTimeout(() => {
+            isDestroyed = true
+            destroyFalling()
+            //console.log('destroy')
+        }, fadeOutTime * 1000 + 10000)
+    }
+    //淡入
+    c.changeShow && c.custom ? isFadeIn = c.showSetting.fadeIn : isFadeIn = mc.showSetting.fadeIn
+
     for (let i = 0; i < imgs.length; i++) {
         createFalling(imgs[i], mc, c)
     }
@@ -149,7 +176,6 @@ const getRandom = (option, type) => {
             if (type == 'petal') ret = Math.random() * 0.75 + 0.25
             else if (type == 'leaf') ret = Math.random() * 0.7 + 0.3
             else if (type == 'snow') ret = Math.random() * sSize4 + 2
-            console.log("4", sSize4)
             break
         case 'a':
             ret = Math.random() * 6
@@ -314,7 +340,6 @@ class Snow {
         this.o = o
     }
     draw(ctx) {
-        //console.log(2)
         ctx.save()
         ctx.globalAlpha = this.o
         ctx.beginPath()
@@ -388,7 +413,6 @@ class Drop {
         }
     }
     draw(ctx) {
-        //console.log(this.x, this.y, this.speed_y, this.px)
         var color = ctx.createLinearGradient(this.px, this.py, this.x, this.y)
         //color.addColorStop(0, 'rgba(66,66,66,0');
         color.addColorStop(0, 'rgba(0,0,0,0)')
@@ -401,7 +425,6 @@ class Drop {
     }
 }
 
-
 /**
  * @param x, y 基础坐标
  * dist 反弹力度，与风力有关
@@ -409,8 +432,8 @@ class Drop {
  */
 class Bounce {
     constructor(x, y) {
-        var dist = Math.random() * wind_speed / 20
-        var angle = Math.PI + Math.random() * Math.PI
+        let dist = Math.random() * wind_speed / 20
+        let angle = Math.PI + Math.random() * Math.PI
         this.x = x
         this.y = y
         this.radius = 0.2 + Math.random() * 0.8
@@ -419,7 +442,7 @@ class Bounce {
     }
     update() {
         this.speed_y += gravity
-        this.speed_x *= 0.95
+        //this.speed_x *= 0.95
         this.x += this.speed_x
         this.y += this.speed_y
     }
@@ -436,18 +459,18 @@ let sSize1, sSize2, sSize4
 //树叶，两种各一半
 let halfNum
 let isTimeOver = false,
-    isDestroy = false
+    isDestroyed = false
 let w = window.innerWidth,
-    h = window.innerHeight
+    h = window.innerHeight,
+    DPR = window.devicePixelRatio
 
 let isFadeOut, fadeOutTime, isFadeIn
 
-var rain_width = 2//1.5
-var drops = [], bounces = []
-var DPR = window.devicePixelRatio
-var wind_speed, wind_speed_x, wind_angle, hasBounce, numLevel, gravity
-//将角度乘 0.017453293 （2PI/360）可转换为弧度。
-var a2, eachAnger = 0.017453293
+let rain_width = 2//1.5
+let drops = [], bounces = []
+let wind_speed, wind_speed_x, wind_angle, hasBounce, numLevel, gravity
+//将角度乘 0.017 （2PI/360）可转换为弧度。
+let a2, eachAnger = 0.017
 
 
 
@@ -467,37 +490,6 @@ var a2, eachAnger = 0.017453293
 const createFalling = (t, mc, c) => {
     let sNum
 
-    w = window.innerWidth
-    h = window.innerHeight
-    sSize1 = mc.imgSize[0]
-    sSize2 = mc.imgSize[1]
-    sSize4 = mc.imgSize[2]
-
-
-
-
-    if (c.changeShow && c.custom) {
-        if (c.showSetting.time >= 1) {
-            isFadeOut = c.showSetting.fadeOut
-            fadeOutTime = c.showSetting.time
-        } else isFadeOut = false
-    }
-    else if (mc.showSetting.time >= 1) {
-        isFadeOut = mc.showSetting.fadeOut
-        fadeOutTime = mc.showSetting.time
-    } else isFadeOut = false
-    if (isFadeOut) {
-        setTimeout(() => {
-            isTimeOver = true
-            //console.log('timeOver')
-        }, fadeOutTime * 1000)
-        setTimeout(() => {
-            isDestroy = true
-            destroyFalling()
-            //console.log('destroy')
-        }, fadeOutTime * 1000 + 10000)
-    }
-    c.changeShow && c.custom ? isFadeIn = c.showSetting.fadeIn : isFadeIn = mc.showSetting.fadeIn
     //每个特别定义
     if (t == 'petal') {
         //有关访客设置，如果访客改了，以访客为准，不然依主人配置（默认配置）
@@ -511,13 +503,10 @@ const createFalling = (t, mc, c) => {
         else sNum = mc.imgNumSetting[1]
         halfNum = sNum / 2
     }
-    //snow
     else if (t == 'snow') {
         if (c.changeImg && c.custom && c.imgNumSetting[2]) sNum = c.imgNumSetting[2]
         else sNum = mc.imgNumSetting[2]
-        console.log(sNum)
     }
-    //rain
     else if (t == 'rain') {
         if (c.changeRain && c.custom) {
             wind_speed = c.rainSetting.wind_speed
@@ -583,75 +572,48 @@ function startFall(t, mc, sNum) {
     //每个的创建步骤
     if (t == 'petal') {
         for (let i = 0; i < sNum; i++) {
-            let someFalling,
-                randomX,
-                randomY,
-                randomS,
-                randomA,
-                randomFnx,
-                randomFny,
-                randomFna
-            randomX = getRandom('x')
-            randomY = isFadeIn ? getRandom('y') - h : getRandom('y')
-            randomA = getRandom('a')
-            randomS = getRandom('s', t)
-            randomFnx = getRandom('fnx')
-            randomFny = getRandom('fny', t)
-            randomFna = getRandom('fna')
-            someFalling = new Petal(randomX, randomY, randomS, randomA, {
-                x: randomFnx,
-                y: randomFny,
-                a: randomFna
-            })
-            someFalling.draw(ctx)
+            let someFalling
+            someFalling = new Petal(
+                getRandom('x'),
+                isFadeIn ? getRandom('y') - h : getRandom('y'),
+                getRandom('s', t),
+                getRandom('a'),
+                {
+                    x: getRandom('fnx'),
+                    y: getRandom('fny', t),
+                    a: getRandom('fna')
+                })
             fallingList.push(someFalling)
         }
     } else if (t == 'leaf') {
         for (let i = 0; i < sNum; i++) {
-            let someFalling,
-                randomX,
-                randomY,
-                randomS,
-                randomA,
-                randomFnx,
-                randomFny,
-                randomFna
-            randomX = getRandom('x')
-            randomY = isFadeIn ? getRandom('y') - h : getRandom('y')
-            randomA = getRandom('a')
-            randomS = getRandom('s', t)
-            randomFnx = getRandom('fnx')
-            randomFny = getRandom('fny', t)
-            randomFna = getRandom('fna')
-            someFalling = new Leaf(randomX, randomY, randomS, randomA, {
-                x: randomFnx,
-                y: randomFny,
-                a: randomFna
-            }, i)
-            someFalling.draw(ctx)
+            let someFalling
+            someFalling = new Leaf(
+                getRandom('x'),
+                isFadeIn ? getRandom('y') - h : getRandom('y'),
+                getRandom('s', t),
+                getRandom('a'),
+                {
+                    x: getRandom('fnx'),
+                    y: getRandom('fny', t),
+                    a: getRandom('fna')
+                },
+                i)
             fallingList.push(someFalling)
         }
     } else if (t == 'snow') {
         ctx.fillStyle = "#FFF";
         for (let i = 0; i < sNum; i++) {
-            let someFalling,
-                randomX,
-                randomY,
-                randomS,
-                randomFnx,
-                randomFny,
-                randomO
-            randomX = getRandom('x')
-            randomY = isFadeIn ? getRandom('y') - h : getRandom('y')
-            randomS = getRandom('s', t)
-            randomO = getRandom('o')
-            randomFnx = getRandom('fnx')
-            randomFny = getRandom('fny', t)
-            someFalling = new Snow(randomX, randomY, randomS, {
-                x: randomFnx,
-                y: randomFny
-            }, randomO)
-            someFalling.draw(ctx)
+            let someFalling
+            someFalling = new Snow(
+                getRandom('x'),
+                isFadeIn ? getRandom('y') - h : getRandom('y'),
+                getRandom('s', t),
+                {
+                    x: getRandom('fnx'),
+                    y: getRandom('fny', t)
+                },
+                getRandom('o'))
             fallingList.push(someFalling)
         }
     } else if (t == 'rain') {
@@ -691,42 +653,24 @@ function startFall(t, mc, sNum) {
             }
         }
     }
-    if (t == 'rain') {
-        stopId = requestAnimationFrame(asd)
-        function asd() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height)
-            updateRain()
-            if (isDestroy) {
-                window.cancelAnimationFrame(stopId)
-                window.cancelAnimationFrame(stopId + 1)
-                window.cancelAnimationFrame(stopId + 2)
-                window.cancelAnimationFrame(stopId + 3)
-                window.cancelAnimationFrame(stopId + 4)
-                return
-            }
-            stopId = requestAnimationFrame(asd)
-        }
+
+    const asd2 = function () {
+        ctx.clearRect(0, 0, canvas.width, canvas.height)
+        updateRain()
+        if (isDestroyed) return
+        requestAnimationFrame(asd2)
     }
-    else {
-        stopId = requestAnimationFrame(asd)
-        function asd() {
-            //console.log(1)
-            ctx.clearRect(0, 0, canvas.width, canvas.height)
-            fallingList.update()
-            fallingList.draw(ctx)
-            if (isDestroy) {
-                window.cancelAnimationFrame(stopId)
-                window.cancelAnimationFrame(stopId + 1)
-                window.cancelAnimationFrame(stopId + 2)
-                window.cancelAnimationFrame(stopId + 3)
-                window.cancelAnimationFrame(stopId + 4)
-                return
-            }
-            stopId = requestAnimationFrame(asd)
-        }
+    const asd = function () {
+        ctx.clearRect(0, 0, canvas.width, canvas.height)
+        fallingList.update()
+        fallingList.draw(ctx)
+        if (isDestroyed) return
+        requestAnimationFrame(asd)
     }
+
+    if (t == 'rain') requestAnimationFrame(asd2)
+    else requestAnimationFrame(asd)
 }
 
-//export const FallingDirect = createFalling
 export const FallingCreate = readyCreate
 export const FallingDestroy = destroyFalling

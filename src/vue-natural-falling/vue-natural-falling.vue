@@ -1,7 +1,7 @@
 <template>
   <div class="nf-container">
-    <div class="nf-mask" @click="cancel()"></div>
-    <div class="nf-button" @click="turn()" title="自然飘落效果开关">
+    <!--<div class="nf-mask" @click="cancel()"></div>-->
+    <div class="nf-button" @click="turn()" title="自然飘落效果开关" v-if="!buttonClass">
       <img style="width: 48px;height: 48px;user-select: none;" src="./icon.png" alt="">
     </div>
     <div class="nf-main" :class="showWindow ? '' : 'hide'">
@@ -12,7 +12,7 @@
         </div>
         <div style="float: right;"><label for="oc">开启自定义选项 </label><input
             style="width: 1.3rem;height: 1.3rem;vertical-align: sub;" type="checkbox" id="oc" v-model="guestConfig.custom"
-            :disabled="guestConfig.open"></div>
+            :disabled="!guestConfig.open"></div>
       </h3>
       <hr style="width: 96%;margin: 0 auto;">
       <br>
@@ -133,17 +133,22 @@ export default {
         }
       }
     },
-    mode: {
-
+    buttonClass: {
+      type: String
+    },
+    easyMode: {
+      type: Boolean,
+      default: false
     }
   },
   data() {
     return {
-      showWindow: true,
+      //showWindow: true,
+      showWindow: false,
       guestConfig: {},
-      /*masterConfig: ,*/
-      myVersion: '0.4.1',
+      myVersion: '0.6.2',
       jsVersion: version,
+      easyModeFallingFlag: true,
     }
   },
   methods: {
@@ -168,13 +173,20 @@ export default {
       this.showWindow = false
     },
     turn() {
-      this.showWindow = !this.showWindow
+      if (this.easyMode) {
+        if (this.easyModeFallingFlag) this.stop()
+        else this.start(this.masterConfig, this.guestConfig)
+        this.easyModeFallingFlag = !this.easyModeFallingFlag
+      }
+      else this.showWindow = !this.showWindow
     },
     start(ms, s) {
+      //core
       FallingCreate(ms, s)
     },
     stop() {
-      for (let i = 0; i < 4; i++) FallingDestroy()
+      //core
+      FallingDestroy()
     },
   },
   created() {
@@ -182,6 +194,11 @@ export default {
   },
   mounted() {
     console.log(`The initial.`)
+    if (this.buttonClass) {
+      document.querySelector('.' + this.buttonClass).addEventListener('click', () => {
+        this.turn()
+      })
+    }
     let hc = localStorage.getItem("guestConfigVersion") == 1 ? this.guestConfig = JSON.parse(localStorage.getItem("guestConfig")) : this.reset()
     if (hc == null) {
       this.guestConfig.custom = false
@@ -189,6 +206,7 @@ export default {
       this.guestConfig.changeShow = false
       this.guestConfig.changeRain = false
     }
+    this.easyModeFallingFlag = this.guestConfig.open
     this.start(this.masterConfig, this.guestConfig)
     /**
      * 
