@@ -4,16 +4,13 @@
   "private": false,
   "type": "module",
   "main": "./naturalfalling.js",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/qtqz/vue-natural-falling.git"
-  },
+  "repository": "https://github.com/qtqz/vue-natural-falling.git",
   "exports": {
     ".": {
       "require": "./naturalfalling.js",
       "import": "./naturalfalling.js"
     }
-   },
+  },
   "scripts": {},
   "dependencies": {},
   "devDependencies": {}

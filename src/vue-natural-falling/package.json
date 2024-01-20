@@ -4,10 +4,7 @@
   "private": false,
   "type": "module",
   "main": "./vue-natural-falling.vue",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/qtqz/vue-natural-falling.git"
-  },
+  "repository": "https://github.com/qtqz/vue-natural-falling.git",
   "exports": {
     ".": {
       "require": "./vue-natural-falling.vue",

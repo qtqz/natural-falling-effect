@@ -61,7 +61,7 @@
               :disabled="!guestConfig.changeRain"> 风力</div>
           <div><input style="width: 3em;" type="number" v-model="guestConfig.rainSetting.wind_angle"
               :disabled="!guestConfig.changeRain"><span title="从+x方向逆时针的角度，270为垂直向下"> 风向 ❔</span></div>
-          <div><input style="width: 3em;" type="number" v-model="guestConfig.rainSetting.wind_speed_x"
+          <div><input style="width: 3em;" type="number" v-model="guestConfig.rainSetting.wind_deviation"
               :disabled="!guestConfig.changeRain"> 横向风误差</div>
           <div><input type="checkbox" id="bo" v-model="guestConfig.rainSetting.hasBounce"
               :disabled="!guestConfig.changeRain"><label for="bo">落地水花</label>
@@ -97,7 +97,7 @@
 </template>
 
 <script>
-import { FallingCreate, FallingDestroy, version } from 'natural-falling-js';
+import { FallingCreate, FallingDestroy, version, configVersion } from 'natural-falling-js';
 //import { FallingCreate, FallingDestroy, version } from '../core/naturalfalling2.js';
 
 export default {
@@ -154,7 +154,7 @@ export default {
   methods: {
     apply() {
       localStorage.setItem("guestConfig", JSON.stringify(this.guestConfig))
-      localStorage.setItem("guestConfigVersion", 1)
+      localStorage.setItem("guestConfigVersion", configVersion)
       this.stop()
       setTimeout(() => {
         this.start(this.masterConfig, this.guestConfig)
@@ -199,8 +199,11 @@ export default {
         this.turn()
       })
     }
-    let hc = localStorage.getItem("guestConfigVersion") == 1 ? this.guestConfig = JSON.parse(localStorage.getItem("guestConfig")) : this.reset()
-    if (hc == null) {
+    let old = localStorage.getItem("guestConfigVersion")
+    let ne = configVersion
+    let hc = old == ne//
+    hc ? this.guestConfig = JSON.parse(localStorage.getItem("guestConfig")) : this.reset()
+    if (!hc) {
       this.guestConfig.custom = false
       this.guestConfig.changeImg = false
       this.guestConfig.changeShow = false
@@ -211,10 +214,10 @@ export default {
     /**
      * 
      * TO DO
-     * 简洁模式（仅允许用户总开关）
-     * 自定义外部按钮
+     * 简洁模式（仅允许用户总开关）*
+     * 自定义外部按钮*
      * 适配移动端
-     * 可以配置风的方向
+     * 可以配置风的方向*
      * 
      */
   },

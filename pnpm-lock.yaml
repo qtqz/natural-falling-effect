@@ -44,6 +44,9 @@ importers:
 
   src/vue-natural-falling:
     dependencies:
+      natural-falling-js:
+        specifier: workspace:^
+        version: link:../core
       vue:
         specifier: ^3.3.4
         version: 3.3.4
