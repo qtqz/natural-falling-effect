@@ -42,12 +42,12 @@ export default {
           wind_angle: 255,
           hasBounce: true,
           maxNum: 80,
-          numLevel: 0.02
+          numLevel: 0.3
         },
         gravity: 0.163,
         zIndex: 100,
         imgSize: [40, 40, 2.5],
-        wind_x: -50//null
+        wind_x: null//-50
       },
     }
   },

@@ -53,8 +53,7 @@
  */
 
 //
-export const version = '0.7.3'
-export const configVersion = 1.2
+export const version = '0.7.4'
 const defaultConfig = {
     open: true,//总开关
     custom: true,//总自定义开关，仅访客的有效，如果单独使用js，访客不能自定义
@@ -74,7 +73,7 @@ const defaultConfig = {
         wind_angle: 255,//风向，从+x方向逆时针角度，270为垂直向下
         hasBounce: true,//落地溅水花
         maxNum: 80,//雨滴数量
-        numLevel: 0.02//淡入速度，**访客不可修改**
+        numLevel: 0.3//淡入速度，0~1之间，**访客不可修改**
     },
     gravity: 0.163,//重力，**访客不可修改**
     zIndex: 100,//自定义canvas的css z-index，可以实现不遮挡网页正文
@@ -106,7 +105,7 @@ const readyCreate = (mc, c) => {
     imgs = mc.imgSetting
     //读访客设置
     if (c.custom && c.changeImg) imgs = c.imgSetting
-    if (imgs.length == 0) {
+    if (!imgs || imgs.length == 0) {
         //按季节粗略判断 1 2 | 3 4 5 | 6 7 8 | 9 10 11 | 12
         if (m >= 3 && m <= 5) imgs = ['petal']
         else if (m >= 9 && m <= 11) imgs = ['leaf']
@@ -152,7 +151,11 @@ const readyCreate = (mc, c) => {
         createFalling(imgs[i], mc, c)
     }
 }
-
+/**
+ * 考虑：新增淡出函数，调用时开始淡出，可以不依赖时间
+ * isTimeOver = true
+ * setTimeout
+ */
 
 //s: some
 let sSize1, sSize2, sSize4
@@ -608,10 +611,7 @@ function startFall(t, mc, sNum) {
 
     function updateRain() {
         if (drops.length < sNum) {
-            let i = 0, len = numLevel
-            for (; i < len; i++) {
-                drops.push(new Drop())
-            }
+            if (Math.random() < numLevel) drops.push(new Drop())
         }
         let j = drops.length
         while (j--) {

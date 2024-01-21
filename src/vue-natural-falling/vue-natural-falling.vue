@@ -70,7 +70,8 @@
       </div>
       <div class="text_area">
         <p v-show="false">{{ guestConfig }}</p>
-        <p>每个子自定义开关如未勾选，其设置将不生效，并且以网站默认设置（你最初看到的设置）为准。若未选择图案，将根据季节自动展示。所有配置将被保存到本地。</p>
+        <p>每个子自定义开关如未勾选，其设置将不生效，并且以网站默认设置（你最初看到的设置）为准。若未选择图案，将根据季节自动展示。</p>
+        <p>所有配置会保存到本地缓存，当网站配置或程序更新后，用户配置将被重置。</p>
       </div>
       <div class="btn-list">
         <button @click="apply()">应用</button>
@@ -97,7 +98,7 @@
 </template>
 
 <script>
-import { FallingCreate, FallingDestroy, version, configVersion } from 'natural-falling-js';
+import { FallingCreate, FallingDestroy, version } from 'natural-falling-js';
 //import { FallingCreate, FallingDestroy, version } from '../core/naturalfalling2.js';
 
 export default {
@@ -120,16 +121,17 @@ export default {
             time: 20
           },
           rainSetting: {
-            wind_speed: 75,
-            wind_speed_x: 4,
+            wind_speed: 50,
+            wind_deviation: 4,
             wind_angle: 255,
             hasBounce: true,
             maxNum: 80,
-            numLevel: 0.03,
-            gravity: 0.163
+            numLevel: 0.3
           },
+          gravity: 0.163,
           zIndex: 100,
-          imgSize: [40, 40, 2.5]
+          imgSize: [40, 40, 2.5],
+          wind_x: null//-50
         }
       }
     },
@@ -146,7 +148,7 @@ export default {
       //showWindow: true,
       showWindow: false,
       guestConfig: {},
-      myVersion: '0.6.2',
+      myVersion: '0.6.4',
       jsVersion: version,
       easyModeFallingFlag: true,
     }
@@ -154,7 +156,6 @@ export default {
   methods: {
     apply() {
       localStorage.setItem("guestConfig", JSON.stringify(this.guestConfig))
-      localStorage.setItem("guestConfigVersion", configVersion)
       this.stop()
       setTimeout(() => {
         this.start(this.masterConfig, this.guestConfig)
@@ -163,7 +164,11 @@ export default {
     reset() {
       this.guestConfig = JSON.parse(JSON.stringify(this.masterConfig))
       localStorage.removeItem("guestConfig")
-      localStorage.removeItem("guestConfigVersion")
+      localStorage.removeItem("configVersion")
+      this.guestConfig.custom = false
+      this.guestConfig.changeImg = false
+      this.guestConfig.changeShow = false
+      this.guestConfig.changeRain = false
     },
     confirm() {
       this.showWindow = false
@@ -199,15 +204,16 @@ export default {
         this.turn()
       })
     }
-    let old = localStorage.getItem("guestConfigVersion")
-    let ne = configVersion
-    let hc = old == ne//
-    hc ? this.guestConfig = JSON.parse(localStorage.getItem("guestConfig")) : this.reset()
-    if (!hc) {
-      this.guestConfig.custom = false
-      this.guestConfig.changeImg = false
-      this.guestConfig.changeShow = false
-      this.guestConfig.changeRain = false
+    let oldVersion = localStorage.getItem("configVersion")
+    let newVersion = this.jsVersion + JSON.stringify(this.masterConfig)
+    let old = JSON.parse(localStorage.getItem("guestConfig"))
+
+    if (oldVersion == newVersion && old) {
+      this.guestConfig = old
+    } else {
+      console.log('updated')
+      this.reset()
+      localStorage.setItem("configVersion", newVersion)
     }
     this.easyModeFallingFlag = this.guestConfig.open
     this.start(this.masterConfig, this.guestConfig)
@@ -218,7 +224,7 @@ export default {
      * 自定义外部按钮*
      * 适配移动端
      * 可以配置风的方向*
-     * 
+     * 窗口隐藏动画
      */
   },
 }
