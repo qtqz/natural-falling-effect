@@ -1,3 +1,3 @@
-# vue自然飘落效果组件
+# 自然飘落特效-js
 
-see [here]()
+see [here](https://github.com/qtqz/natural-falling-effect)

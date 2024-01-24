@@ -6,3 +6,4 @@ dist
 .vscode/*
 
 备用
+.npmrc

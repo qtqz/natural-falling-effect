@@ -1,5 +1,5 @@
 {
-  "name": "vue-natural-falling-demo",
+  "name": "natural-falling-effect",
   "version": "0.0.0",
   "private": true,
   "main": "",
@@ -11,7 +11,7 @@
     "format": "prettier --write src/",
     "ugly": "uglifyjs ./src/core/naturalfalling.js -c -o ./src/core/naturalfalling.min.js"
   },
-  "repository": "https://github.com/qtqz/vue-natural-falling.git",
+  "repository": "https://github.com/qtqz/natural-falling-effect.git",
   "dependencies": {
     "natural-falling-js": "workspace:^",
     "vue": "^3.3.4",

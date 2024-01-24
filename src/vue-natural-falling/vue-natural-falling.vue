@@ -68,9 +68,9 @@
           </div>
         </div>
       </div>
-      <div class="text_area">
+      <div class="nf-text">
         <p v-show="false">{{ guestConfig }}</p>
-        <p>每个子自定义开关如未勾选，其设置将不生效，并且以网站默认设置（你最初看到的设置）为准。若未选择图案，将根据季节自动展示。</p>
+        <p>每个子自定义开关如未勾选，其设置将不生效，并且以网站默认设置为准。若未选择图案，将根据季节自动展示。</p>
         <p>所有配置会保存到本地缓存，当网站配置或程序更新后，用户配置将被重置。</p>
       </div>
       <div class="btn-list">
@@ -81,7 +81,7 @@
       </div>
       <div class="link-list">
         <div style="float: left;">
-          <img style="vertical-align: middle;" src="./icon.png" alt=""><span>自然飘落效果组件 </span><span class="v"
+          <img style="vertical-align: middle;" src="./icon.png" alt=""><span>自然飘落特效 </span><span class="v"
             title="GUI版本">{{ myVersion
             }}</span> - <span class="v" title="核心js版本" style="color: #FF9800;">{{ jsVersion }}</span>
         </div>
@@ -90,7 +90,7 @@
             viewBox="0 0 24 24">
             <path fill="currentColor"
               d="M12.001 2c-5.525 0-10 4.475-10 10a9.994 9.994 0 0 0 6.837 9.488c.5.087.688-.213.688-.476c0-.237-.013-1.024-.013-1.862c-2.512.463-3.162-.612-3.362-1.175c-.113-.288-.6-1.175-1.025-1.413c-.35-.187-.85-.65-.013-.662c.788-.013 1.35.725 1.538 1.025c.9 1.512 2.337 1.087 2.912.825c.088-.65.35-1.087.638-1.337c-2.225-.25-4.55-1.113-4.55-4.938c0-1.088.387-1.987 1.025-2.688c-.1-.25-.45-1.275.1-2.65c0 0 .837-.262 2.75 1.026a9.28 9.28 0 0 1 2.5-.338c.85 0 1.7.112 2.5.337c1.913-1.3 2.75-1.024 2.75-1.024c.55 1.375.2 2.4.1 2.65c.637.7 1.025 1.587 1.025 2.687c0 3.838-2.337 4.688-4.563 4.938c.363.312.676.912.676 1.85c0 1.337-.013 2.412-.013 2.75c0 .262.188.574.688.474A10.016 10.016 0 0 0 22 12c0-5.525-4.475-10-10-10Z" />
-          </svg><span><a href="#" target="_blank" rel="noopener noreferrer">github-</a></span>
+          </svg><span><a href="https://github.com/qtqz/natural-falling-effect" target="_blank">github:qtqz/natural-falling-effect</a></span>
         </div>
       </div>
     </div>
@@ -98,8 +98,8 @@
 </template>
 
 <script>
-import { FallingCreate, FallingDestroy, version } from 'natural-falling-js';
-//import { FallingCreate, FallingDestroy, version } from '../core/naturalfalling2.js';
+import { fallingCreate, fallingDestroy, version, defaultConfig } from 'natural-falling-js'
+//import { FallingCreate, FallingDestroy, version } from '../core/naturalfalling2.js'
 
 export default {
   name: 'vue-natural-falling',
@@ -107,32 +107,7 @@ export default {
     masterConfig: {
       type: Object,
       default() {
-        return {
-          open: true,
-          custom: true,
-          changeImg: true,
-          changeShow: true,
-          changeRain: true,
-          imgSetting: [],
-          imgNumSetting: [40, 40, 80, 60],
-          showSetting: {
-            fadeIn: true,
-            fadeOut: false,
-            time: 20
-          },
-          rainSetting: {
-            wind_speed: 50,
-            wind_deviation: 4,
-            wind_angle: 255,
-            hasBounce: true,
-            maxNum: 80,
-            numLevel: 0.3
-          },
-          gravity: 0.163,
-          zIndex: 100,
-          imgSize: [40, 40, 2.5],
-          wind_x: null//-50
-        }
+        return defaultConfig
       }
     },
     buttonClass: {
@@ -148,7 +123,7 @@ export default {
       //showWindow: true,
       showWindow: false,
       guestConfig: {},
-      myVersion: '0.6.4',
+      myVersion: '0.7.0',
       jsVersion: version,
       easyModeFallingFlag: true,
     }
@@ -187,11 +162,11 @@ export default {
     },
     start(ms, s) {
       //core
-      FallingCreate(ms, s)
+      fallingCreate(ms, s)
     },
     stop() {
       //core
-      FallingDestroy()
+      fallingDestroy()
     },
   },
   created() {
@@ -222,7 +197,7 @@ export default {
      * TO DO
      * 简洁模式（仅允许用户总开关）*
      * 自定义外部按钮*
-     * 适配移动端
+     * 适配移动端*
      * 可以配置风的方向*
      * 窗口隐藏动画
      */
@@ -257,7 +232,7 @@ export default {
   border: 1px solid rgba(0, 0, 0, 0.2);
 }
 
-.dark .text_area {
+.dark .nf-text {
   border: 1px solid rgba(0, 0, 0, 0.7);
 }
 
@@ -337,12 +312,12 @@ a {
   margin-bottom: 10px;
 }
 
-.text_area {
+.nf-text {
   font-size: 14px;
   border: 1px #ccc solid;
   border-radius: 6px;
   width: 100%;
-  padding: 1rem;
+  padding: 0.5rem 1rem;
   margin: 1rem 0;
 }
 
@@ -370,14 +345,14 @@ a {
   position: fixed;
   box-sizing: border-box;
   width: 800px;
-  width: 780px;
+  width: 750px;
   min-height: 600px;
   top: 60px;
   left: 50vw;
   top: 50vh;
   transform: translate(-50%, -50%);
   /* margin: 0 auto 0 auto; */
-  padding: 2em 4em 3em 4em;
+  padding: 2em 3em 3em;
   background-color: rgb(255, 255, 255);
   border-radius: 10px;
   box-shadow: 2px 2px 15px #aaaaaa;
@@ -423,7 +398,6 @@ a {
 
 .option-row {
   position: relative;
-  min-height: 150px;
   width: 100%;
   padding-top: 1.5em;
   margin: 1em 0;
@@ -457,6 +431,40 @@ a {
 
 .option-col:last-child:after {
   content: unset;
+}
+
+@media screen and (max-width: 600px) {
+  .nf-main {
+    width: 376px;
+    padding: 0.5em 1.5em;
+    max-height: 100%;
+    overflow-y: scroll;
+  }
+
+  .option-row {
+    padding: 1.5em 0.5em 0;
+  }
+
+  .option-col {
+    width: 50%;
+    flex-grow: 1;
+    max-width: 60%;
+  }
+
+  .option-col:after {
+    display: none;
+  }
+
+  .link-list {
+    margin-top: 1em;
+  }
+.link-list>div {
+    float: none!important;
+    margin-top: 4px;
+  }
+  br {
+    display: none;
+  }
 }
 </style>
   

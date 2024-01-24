@@ -13,7 +13,7 @@
   <VueNaturalFalling :masterConfig="naturalFallingConfig" :buttonClass="''" :easyMode="false" />
   <button class="sd">自定义按钮</button>
 </template>
-<script>
+<script> 
 import VueNaturalFalling from 'vue-natural-falling'
 
 export default {
@@ -41,7 +41,6 @@ export default {
           wind_deviation: 4,
           wind_angle: 255,
           hasBounce: true,
-          maxNum: 80,
           numLevel: 0.3
         },
         gravity: 0.163,

@@ -2,7 +2,7 @@
 /* eslint-disable */
 /**
  * @name naturalfalling.js
- * @version 0.6.0
+ * @version 
  * @date 2023.8.14
  * @author 轻稚天雪 (qtqz)
  * @license MIT
@@ -39,6 +39,8 @@
  * 2024.1.16
  * 调整代码结构
  * 
+ * 2024.1.23
+ * 适配移动端
  * 
  * 下一步
  * 
@@ -53,8 +55,8 @@
  */
 
 //
-export const version = '0.7.4'
-const defaultConfig = {
+export const version = '0.7.5'
+export const defaultConfig = {
     open: true,//总开关
     custom: true,//总自定义开关，仅访客的有效，如果单独使用js，访客不能自定义
     changeImg: true,//子自定义开关，**仅访客的有效**
@@ -65,14 +67,13 @@ const defaultConfig = {
     showSetting: {
         fadeIn: true,//淡入（下雨始终淡入）
         fadeOut: false,//淡出
-        time: 10//几秒后开始淡出
+        time: 20//几秒后开始淡出
     },
     rainSetting: {
         wind_speed: 70,//风力
         wind_deviation: 4,//横向风力误差
         wind_angle: 255,//风向，从+x方向逆时针角度，270为垂直向下
         hasBounce: true,//落地溅水花
-        maxNum: 80,//雨滴数量
         numLevel: 0.3//淡入速度，0~1之间，**访客不可修改**
     },
     gravity: 0.163,//重力，**访客不可修改**
@@ -87,6 +88,8 @@ const destroyFalling = (t) => {
         const createdFalling = document.getElementById(id)
         if (createdFalling) createdFalling.remove()
     }
+    clearTimeout(t1)
+    clearTimeout(t2)
 }
 
 /**
@@ -134,11 +137,11 @@ const readyCreate = (mc, c) => {
         fadeOutTime = mc.showSetting.time
     } else isFadeOut = false
     if (isFadeOut) {
-        setTimeout(() => {
+        t1 = setTimeout(() => {
             isTimeOver = true
             //console.log('timeOver')
         }, fadeOutTime * 1000)
-        setTimeout(() => {
+        t2 = setTimeout(() => {
             isDestroyed = true
             destroyFalling()
             //console.log('destroy')
@@ -175,6 +178,7 @@ let wind_speed, wind_deviation, wind_angle, hasBounce, numLevel, gravity, wind_x
 //将角度乘 0.017 （2PI/360）可转换为弧度。
 let a2, eachAnger = 0.017
 
+let t1, t2//用于清除定时器
 
 const img = new Image(), img2 = new Image(), img3 = new Image()
 {
@@ -441,7 +445,7 @@ class Drop {
  */
 class Bounce {
     constructor(x, y) {
-        let dist = Math.random() * wind_speed / 20
+        let dist = Math.random() * wind_speed / 12
         let angle = Math.PI + Math.random() * Math.PI
         this.x = x
         this.y = y
@@ -660,5 +664,5 @@ function startFall(t, mc, sNum) {
     else requestAnimationFrame(asd)
 }
 
-export const FallingCreate = readyCreate
-export const FallingDestroy = destroyFalling
+export const fallingCreate = readyCreate
+export const fallingDestroy = destroyFalling
