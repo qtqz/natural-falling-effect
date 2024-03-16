@@ -23,6 +23,8 @@ vue 组件额外功能：
 
 838
 
+也可以下载此示例仓库来试用。此时由于此仓库用了`pnpm-workspace`功能，此时你必须使用 pnpm 。
+
 性能方面，
 
 ## 使用
@@ -35,22 +37,21 @@ vue 组件额外功能：
 <!-- 自行托管 -->
 <script type="module">
     import { fallingCreate, fallingDestroy, version, defaultConfig } from './naturalfalling.min.js'
-    FallingCreate()
+    fallingCreate()
 </script>
 
-<!-- 使用CDN -->
+<!-- 使用 CDN -->
 <script type="module">
     import { fallingCreate, fallingDestroy, version, defaultConfig } from 'https://cdn.jsdelivr.net/npm/natural-falling-js/naturalfalling.min.js'
-    FallingCreate()
+    fallingCreate()
 </script>
 ```
 
-> 如需预览，因为用了`type="module"`，需要从本地web服务器打开，不能从文件夹打开。
+> 如需预览，因为使用了`type="module"`，你需要从本地 web 服务器打开预览，不能从文件夹打开。
 
-在项目中安装：
+或是在项目中安装：
 
 ```bash
-# 推荐使用pnpm，节省硬盘空间
 pnpm i natural-falling-js
 # 如果没有pnpm：npm i natural-falling-js
 ```
@@ -61,7 +62,7 @@ pnpm i natural-falling-js
 
 * `fallingCreate()`可传入一个对象，配置如下，不传则用默认配置。如需自定义，请完整传入整个对象，不要省略属性。
 * `fallingDestroy()`调用可以立即结束特效。
-* `version`为当前js版本号。
+* `version`为当前 js 版本号。
 * `defaultConfig`默认配置。
 
 ```js
@@ -99,7 +100,6 @@ pnpm i natural-falling-js
 ### vue 组件
 
 ```bash
-# 推荐使用pnpm，节省硬盘空间
 pnpm i vue-natural-falling
 # 如果没有pnpm：npm i vue-natural-falling
 ```
@@ -110,21 +110,27 @@ pnpm i vue-natural-falling
   <VueNaturalFalling :masterConfig="naturalFallingConfig" :buttonClass="''" :easyMode="false" />
 ```
 
-* `masterConfig: object` 配置，不传则用默认配置，内容详见上一节。如需自定义，请完整传入整个对象，不要省略属性。
-* `buttonClass: string` 自定义入口按钮，传入按钮的CSS类名，允许你将默认按钮换成一个与页面风格更一致的，组件挂载时必须存在于DOM树中。
+* `masterConfig: object` 配置，不传则用默认配置，内容详见[上一节](#核心 js)。如需自定义，请完整传入整个对象，不要省略属性。
+* `buttonClass: string` 自定义入口按钮，传入按钮的 CSS 类名，允许你将默认按钮换成自己的，有助于页面风格一致。组件挂载时其必须存在于 DOM 树中。
 * `easyMode: boolean` 简单模式，默认关闭，传入`true`启用，会将入口按钮的用途从**开关界面**改为**开关特效**。
 
-将此组件置于`dark`类名下，即可启用暗黑模式。
+另外，将此组件置于`dark`类名下，即可启用暗色模式。
 
 ## 已知问题与将来
 
 * vue组件：输入约束
-* 
+* 优化移动端显示效果
 
-## 项目历程
+## 更新日志
 
 1. 2023.8 启动，整合多个项目，初步可用，后搁置
-2. 2024.1 重启，重构代码，完善功能
+2. 2024.1 重启，重构代码，完善功能，发布核心 js
+3. 2024.3 发布 vue 组件，优化小屏幕显示
+
+- vue 0.6.4：更新后重置访客配置
+- vue 0.7.0：适配移动端
+- vue 0.7.1：修复重置访客配置
+- js 0.8.0：优化小屏幕显示，整理越来越乱的代码 :（
 
 ## 支持我
 

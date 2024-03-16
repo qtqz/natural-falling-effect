@@ -13,7 +13,7 @@
   <VueNaturalFalling :masterConfig="naturalFallingConfig" :buttonClass="''" :easyMode="false" />
   <button class="sd">自定义按钮</button>
 </template>
-<script> 
+<script>
 import VueNaturalFalling from 'vue-natural-falling'
 
 export default {
@@ -68,7 +68,7 @@ export default {
 
   },
   mounted() {
-
+    this.toggleDark()
   },
 }
 </script>

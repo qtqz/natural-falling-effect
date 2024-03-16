@@ -1,16 +1,16 @@
 {
   "name": "natural-falling-js",
-  "version": "0.7.5",
+  "version": "0.8.0",
   "private": false,
   "type": "module",
-  "main": "./naturalfalling.min.js",
-  "module": "./naturalfalling.min.js",
+  "main": "./naturalfalling.js",
+  "module": "./naturalfalling.js",
   "repository": "https://github.com/qtqz/natural-falling-effect.git",
   "license": "MIT",
   "exports": {
     ".": {
-      "require": "./naturalfalling.min.js",
-      "import": "./naturalfalling.min.js"
+      "require": "./naturalfalling.js",
+      "import": "./naturalfalling.js"
     }
   },
   "scripts": {},

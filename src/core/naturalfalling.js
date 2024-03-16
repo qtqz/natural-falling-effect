@@ -9,15 +9,6 @@
  * @param {Object} mc master config，主人配置
  * @param {Object} c config，访客配置
  * 
- * 使用
- * 在vue组件内：
- * import { FallingCreate, FallingDestroy } from './naturalfalling.js';
- * FallingCreate(ms, s)//开始
- * for (let i = 0; i < 4; i++) FallingDestroy()//停止
- * 单独使用js：
- * <script type="module" src="./naturalfalling.js"></script>
- * <script>FallingCreate(mc)</script>
- * 
  * 更多描述见github
  * 
  * edited by qtqz 2023.8.8
@@ -51,11 +42,12 @@
  * 任一方更新，重置访客配置
  * 
  * 
+ * 0.8.0：优化小屏幕显示，整理越来越乱的代码 :（
  * 
  */
 
 //
-export const version = '0.7.5'
+export const version = '0.8.0'
 export const defaultConfig = {
     open: true,//总开关
     custom: true,//总自定义开关，仅访客的有效，如果单独使用js，访客不能自定义
@@ -82,6 +74,7 @@ export const defaultConfig = {
     wind_x: null// -35//前三种图案飘落横向风力，正负决定方向
 }
 const id = 'canvas_natural_falling'//+'_type'+'_'+t
+let t1, t2//用于清除定时器
 const destroyFalling = (t) => {
     isDestroyed = true
     for (let i = 0; i < 4; i++) {
@@ -118,12 +111,32 @@ const readyCreate = (mc, c) => {
 
     w = window.innerWidth
     h = window.innerHeight
-    sSize1 = mc.imgSize[0]
-    sSize2 = mc.imgSize[1]
-    sSize4 = mc.imgSize[2]
+
+    //有关访客设置，如果访客改了，以访客为准，不然依主人配置（默认配置）
+    if (c.changeImg && c.custom) {
+        [sNum1, sNum2, sNum3, sNum4] = c.imgNumSetting
+    }
+    else {
+        [sNum1, sNum2, sNum3, sNum4] = mc.imgNumSetting
+    }
+
+    [sSize1, sSize2, sSize4] = mc.imgSize
+
     gravity = mc.gravity
     wind_x = mc.wind_x
     isDestroyed = false
+
+    //优化小屏幕显示，在雨那里也有
+    if (w < 760) {
+        [sNum1, sNum2, sNum3, sNum4] = [sNum1, sNum2, sNum3, sNum4].map((s) => {
+            return Math.floor(s / 2)
+        });
+        [sSize1, sSize2] = [sSize1, sSize2].map((s) => {
+            return Math.floor(s / 1.2)
+        })
+        sSize4 -= 0.5
+        gravity = gravity / 2
+    }
 
     //淡出，访客改了依访客，不然依主人
     if (c.changeShow && c.custom) {
@@ -150,8 +163,39 @@ const readyCreate = (mc, c) => {
     //淡入
     c.changeShow && c.custom ? isFadeIn = c.showSetting.fadeIn : isFadeIn = mc.showSetting.fadeIn
 
+
+
     for (let i = 0; i < imgs.length; i++) {
-        createFalling(imgs[i], mc, c)
+        //每个特别定义
+        ((t) => {
+            if (t == 'petal') startFall(t, mc, sNum1)
+            if (t == 'leaf') {
+                halfNum = sNum2 / 2
+                startFall(t, mc, sNum2)
+            }
+            if (t == 'snow') startFall(t, mc, sNum3)
+            if (t == 'rain') {
+                if (c.changeRain && c.custom) {
+                    wind_speed = c.rainSetting.wind_speed
+                    wind_deviation = c.rainSetting.wind_deviation
+                    wind_angle = c.rainSetting.wind_angle
+                    hasBounce = c.rainSetting.hasBounce
+                } else {
+                    wind_angle = mc.rainSetting.wind_angle
+                    wind_deviation = mc.rainSetting.wind_deviation
+                    wind_speed = mc.rainSetting.wind_speed
+                    hasBounce = mc.rainSetting.hasBounce
+                }
+                if (w < 760) {
+                    wind_speed = wind_speed / 1.5
+                    wind_deviation = wind_deviation / 1.5
+                }
+                numLevel = mc.rainSetting.numLevel
+                a2 = wind_angle * eachAnger
+                startFall(t, mc, sNum4)
+            }
+        })(imgs[i])
+        //createFalling(imgs[i], mc, c)
     }
 }
 /**
@@ -162,13 +206,13 @@ const readyCreate = (mc, c) => {
 
 //s: some
 let sSize1, sSize2, sSize4
+let sNum1, sNum2, sNum3, sNum4
 //树叶，两种各一半
 let halfNum
 let isTimeOver = false,//启用淡出且超时为true，否则永远false
     isDestroyed = false
 let w = window.innerWidth,
-    h = window.innerHeight,
-    DPR = window.devicePixelRatio
+    h = window.innerHeight
 
 let isFadeOut, fadeOutTime, isFadeIn
 
@@ -177,8 +221,6 @@ let drops = [], bounces = []
 let wind_speed, wind_deviation, wind_angle, hasBounce, numLevel, gravity, wind_x
 //将角度乘 0.017 （2PI/360）可转换为弧度。
 let a2, eachAnger = 0.017
-
-let t1, t2//用于清除定时器
 
 const img = new Image(), img2 = new Image(), img3 = new Image()
 {
@@ -461,7 +503,7 @@ class Bounce {
     }
     draw(ctx) {
         ctx.beginPath()
-        ctx.arc(this.x, this.y, this.radius * DPR, 0, Math.PI * 2)
+        ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2)
         ctx.fill()
     }
 }
@@ -480,46 +522,8 @@ class Bounce {
  * and https://qiu-weidong.github.io/2022/04/30/blog/sakura/
  * 
  */
-const createFalling = (t, mc, c) => {
-    let sNum
-
-    //每个特别定义
-    if (t == 'petal') {
-        //有关访客设置，如果访客改了，以访客为准，不然依主人配置（默认配置）
-        if (c.changeImg && c.custom && c.imgNumSetting[0]) sNum = c.imgNumSetting[0]
-        else sNum = mc.imgNumSetting[0]
-        //无关访客设置
-    }
-    //leaf，银杏树叶和橘黄枫叶
-    else if (t == 'leaf') {
-        if (c.changeImg && c.custom && c.imgNumSetting[1]) sNum = c.imgNumSetting[1]
-        else sNum = mc.imgNumSetting[1]
-        halfNum = sNum / 2
-    }
-    else if (t == 'snow') {
-        if (c.changeImg && c.custom && c.imgNumSetting[2]) sNum = c.imgNumSetting[2]
-        else sNum = mc.imgNumSetting[2]
-    }
-    else if (t == 'rain') {
-        if (c.changeRain && c.custom) {
-            wind_speed = c.rainSetting.wind_speed
-            wind_deviation = c.rainSetting.wind_deviation
-            wind_angle = c.rainSetting.wind_angle
-            hasBounce = c.rainSetting.hasBounce
-            sNum = c.imgNumSetting[3]
-        } else {
-            wind_angle = mc.rainSetting.wind_angle
-            wind_deviation = mc.rainSetting.wind_deviation
-            wind_speed = mc.rainSetting.wind_speed
-            hasBounce = mc.rainSetting.hasBounce
-            sNum = mc.imgNumSetting[3]
-        }
-        numLevel = mc.rainSetting.numLevel
-        a2 = wind_angle * eachAnger
-    }
-
-    startFall(t, mc, sNum)
-}
+//const createFalling = (t, mc, c) => {
+//}
 
 /**
  * @param {String} t 类型，petal 花瓣，leaf 落叶，snow 雪花
@@ -555,7 +559,7 @@ function startFall(t, mc, sNum) {
         if (t == 'snow') {
             ctx.fillStyle = "#FFF"
         } else if (t == 'rain') {
-            ctx.lineWidth = rain_width * DPR
+            ctx.lineWidth = rain_width
             ctx.fillStyle = 'rgba(223,223,223,0.6)'
         }
     };
@@ -609,7 +613,7 @@ function startFall(t, mc, sNum) {
             fallingList.push(someFalling)
         }
     } else if (t == 'rain') {
-        ctx.lineWidth = rain_width * DPR
+        ctx.lineWidth = rain_width
         ctx.fillStyle = 'rgba(223,223,223,0.6)'
     }
 
