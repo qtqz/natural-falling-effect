@@ -43,11 +43,12 @@
  * 
  * 
  * 0.8.0：优化小屏幕显示，整理越来越乱的代码 :（
+ * 0.8.1：更好地判断季节
  * 
  */
 
 //
-export const version = '0.8.0'
+export const version = '0.8.1'
 export const defaultConfig = {
     open: true,//总开关
     custom: true,//总自定义开关，仅访客的有效，如果单独使用js，访客不能自定义
@@ -85,6 +86,18 @@ const destroyFalling = (t) => {
     clearTimeout(t2)
 }
 
+function getSeason(month, day) {
+    if ((month === 3 && day >= 21) || (month === 4) || (month === 5) || (month === 6 && day < 21)) {
+        return "petal";
+    } else if ((month === 6 && day >= 21) || (month === 7) || (month === 8) || (month === 9 && day < 22)) {
+        return "rain";
+    } else if ((month === 9 && day >= 22) || (month === 10) || (month === 11) || (month === 12 && day < 21)) {
+        return "leaf";
+    } else {
+        return "snow";
+    }
+}
+
 /**
  * @param {Object} mc master config，主人配置
  * @param {Object} c config，访客配置
@@ -97,16 +110,25 @@ const readyCreate = (mc, c) => {
     let imgs
     let date = new Date()
     let m = date.getMonth() + 1
+    let d = date.getDay()
     //先读主人设置, 无视自定义开关，若都不选就是自动选择，不是不开启
     imgs = mc.imgSetting
     //读访客设置
     if (c.custom && c.changeImg) imgs = c.imgSetting
     if (!imgs || imgs.length == 0) {
-        //按季节粗略判断 1 2 | 3 4 5 | 6 7 8 | 9 10 11 | 12
+        /*
+        //按月份粗略判断季节 1 2 | 3 4 5 | 6 7 8 | 9 10 11 | 12
         if (m >= 3 && m <= 5) imgs = ['petal']
         else if (m >= 9 && m <= 11) imgs = ['leaf']
         else if (m == 12 || m <= 2) imgs = ['snow']
-        else if (m >= 6 && m <= 8) imgs = ['rain']
+        else if (m >= 6 && m <= 8) imgs = ['rain']*/
+        /**
+        春分(公历3月20日~3月21日之间)
+        夏至(公历6月21日~6月22日之间)
+        秋分(公历9月23日~9月24日之间)
+        冬至(公历12月21日~12月23日之间)
+         */
+        imgs=[getSeason(m,d)]
     }
 
     w = window.innerWidth
