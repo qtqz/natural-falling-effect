@@ -15,6 +15,7 @@
 </template>
 <script>
 import VueNaturalFalling from 'vue-natural-falling'
+//import VueNaturalFalling from './vue-natural-falling/vue-natural-falling.vue'
 
 export default {
   name: 'App',

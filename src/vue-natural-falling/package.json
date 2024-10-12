@@ -8,8 +8,8 @@
   "license": "MIT",
   "exports": {
     ".": {
-      "require": "./vue-natural-falling.vue",
-      "import": "./vue-natural-falling.vue"
+      "require": "./main.js",
+      "import": "./main.js"
     }
   },
   "scripts": {},
