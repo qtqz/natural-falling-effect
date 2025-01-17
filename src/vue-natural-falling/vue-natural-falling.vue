@@ -94,7 +94,7 @@
             <path fill="currentColor"
               d="M12.001 2c-5.525 0-10 4.475-10 10a9.994 9.994 0 0 0 6.837 9.488c.5.087.688-.213.688-.476c0-.237-.013-1.024-.013-1.862c-2.512.463-3.162-.612-3.362-1.175c-.113-.288-.6-1.175-1.025-1.413c-.35-.187-.85-.65-.013-.662c.788-.013 1.35.725 1.538 1.025c.9 1.512 2.337 1.087 2.912.825c.088-.65.35-1.087.638-1.337c-2.225-.25-4.55-1.113-4.55-4.938c0-1.088.387-1.987 1.025-2.688c-.1-.25-.45-1.275.1-2.65c0 0 .837-.262 2.75 1.026a9.28 9.28 0 0 1 2.5-.338c.85 0 1.7.112 2.5.337c1.913-1.3 2.75-1.024 2.75-1.024c.55 1.375.2 2.4.1 2.65c.637.7 1.025 1.587 1.025 2.687c0 3.838-2.337 4.688-4.563 4.938c.363.312.676.912.676 1.85c0 1.337-.013 2.412-.013 2.75c0 .262.188.574.688.474A10.016 10.016 0 0 0 22 12c0-5.525-4.475-10-10-10Z" />
           </svg><span><a href="https://github.com/qtqz/natural-falling-effect"
-              target="_blank">github:qtqz/natural-falling-effect</a></span>
+              target="_blank">qtqz/natural-falling-effect</a></span>
         </div>
       </div>
     </div>
@@ -102,7 +102,10 @@
 </template>
 
 <script>
-import { fallingCreate, fallingDestroy, version, defaultConfig } from 'natural-falling-js'
+//import { fallingCreate, fallingDestroy, version, defaultConfig } from 'natural-falling-js' copy.js
+//import { fallingCreate, fallingDestroy, version, defaultConfig } from '../core/naturalfalling2'
+//import { fallingCreate, fallingDestroy, version, defaultConfig } from '../core/naturalfalling3'
+import { fallingCreate, version, defaultConfig } from '../core/naturalfalling4'
 
 export default {
   name: 'vue-natural-falling',
@@ -129,6 +132,7 @@ export default {
       myVersion: '0.7.1',
       jsVersion: version,
       easyModeFallingFlag: true,
+      f: null
     }
   },
   methods: {
@@ -165,11 +169,21 @@ export default {
     },
     start(ms, s) {
       //core
-      fallingCreate(ms, s)
+      try {
+      this.f = fallingCreate(ms, s)
+      } catch (e) {
+        alert(e)
+      }
     },
     stop() {
       //core
-      fallingDestroy()
+      //fallingDestroy()
+      try {
+      this.f.destroy()
+      } catch (e) {
+        alert(e)
+        console.error(e)
+      }
     },
   },
   created() {
@@ -185,13 +199,13 @@ export default {
     let oldVersion = localStorage.getItem("configVersion")
     let newVersion = this.jsVersion + JSON.stringify(this.masterConfig)
     let old = JSON.parse(localStorage.getItem("guestConfig"))
+    localStorage.setItem("configVersion", newVersion)
 
     if (oldVersion == newVersion && old) {
       this.guestConfig = old
     } else if (oldVersion != newVersion && oldVersion) {
       console.log('updated')
       this.reset()
-      localStorage.setItem("configVersion", newVersion)
     }
     this.easyModeFallingFlag = this.guestConfig.open
     this.start(this.masterConfig, this.guestConfig)
@@ -205,6 +219,9 @@ export default {
      * 窗口隐藏动画
      */
   },
+  unmounted() {
+    this.stop()
+  }
 }
 </script>
 

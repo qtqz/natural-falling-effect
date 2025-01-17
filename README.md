@@ -21,7 +21,7 @@ vue 组件额外功能：
 
 ## 预览
 
-838
+838[Felix_SANA 'S BLOG](https://www.systemannounce.com/page/2/)
 
 也可以下载此示例仓库来试用。此时由于此仓库用了`pnpm-workspace`功能，此时你必须使用 pnpm 。
 

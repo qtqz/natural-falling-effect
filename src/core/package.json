@@ -1,6 +1,6 @@
 {
   "name": "natural-falling-js",
-  "version": "0.8.2",
+  "version": "0.8.3",
   "private": false,
   "type": "module",
   "main": "./naturalfalling.js",

@@ -41,13 +41,9 @@ export default {
           wind_speed: 50,
           wind_deviation: 4,
           wind_angle: 255,
-          hasBounce: true,
-          numLevel: 0.3
+          hasBounce: true
         },
-        gravity: 0.163,
-        zIndex: 100,
-        imgSize: [40, 40, 2.5],
-        wind_x: null//-50
+        wind_x: null//-50//-50null
       },
     }
   },
@@ -69,7 +65,7 @@ export default {
 
   },
   mounted() {
-    this.toggleDark()
+    document.documentElement.classList.add('dark')
   },
 }
 </script>
