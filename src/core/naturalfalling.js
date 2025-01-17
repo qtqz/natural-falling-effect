@@ -31,6 +31,8 @@
 
 
 
+export const version = '0.9.0';
+
 /**
  * Core configuration and state management
  * 
@@ -394,6 +396,7 @@ class Bounce {
     ctx.beginPath();
     ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
     ctx.fill();
+
   }
 }
 
@@ -418,7 +421,6 @@ class FallingEffect {
     if (this.config.fadeOut && this.config.fadeOutTime >= 1) {
       setTimeout(() => {
         this.config.isTimeOver = true;
-        console.log('tttt')
       }, this.config.fadeOutTime * 1000);
 
       setTimeout(() => {
@@ -477,8 +479,11 @@ class FallingEffect {
     this.canvas.height = window.innerHeight;
     this.config.width = window.innerWidth;
     this.config.height = window.innerHeight;
-    console.log(this.type,this.ctx.fillStyle)
-    if (this.type === 'snow') {
+    if (this.type === 'rain') {
+      this.ctx.lineWidth = 2
+      this.ctx.fillStyle = 'rgba(223,223,223,0.6)'
+    }
+    else if (this.type === 'snow') {
       this.ctx.fillStyle = '#FFF';
     }
   }
@@ -600,9 +605,5 @@ export function fallingCreate(masterConfig, clientConfig) {
   };
 }
 
-// 版本号
-export const version = '0.9.0';
-
 // 默认配置导出
-export const defaultConfig = FallingConfig.DEFAULT;
-
+//export const defaultConfig = FallingConfig.DEFAULT;

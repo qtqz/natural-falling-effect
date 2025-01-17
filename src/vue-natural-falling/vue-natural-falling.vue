@@ -102,10 +102,7 @@
 </template>
 
 <script>
-//import { fallingCreate, fallingDestroy, version, defaultConfig } from 'natural-falling-js' copy.js
-//import { fallingCreate, fallingDestroy, version, defaultConfig } from '../core/naturalfalling2'
-//import { fallingCreate, fallingDestroy, version, defaultConfig } from '../core/naturalfalling3'
-import { fallingCreate, version, defaultConfig } from '../core/naturalfalling4'
+import { fallingCreate, version, defaultConfig } from '../core/naturalfalling'
 
 export default {
   name: 'vue-natural-falling',
@@ -129,7 +126,7 @@ export default {
       //showWindow: true,
       showWindow: false,
       guestConfig: {},
-      myVersion: '0.7.1',
+      myVersion: '0.7.3',
       jsVersion: version,
       easyModeFallingFlag: true,
       f: null
@@ -170,16 +167,17 @@ export default {
     start(ms, s) {
       //core
       try {
-      this.f = fallingCreate(ms, s)
+        this.f = fallingCreate(ms, s)
       } catch (e) {
         alert(e)
+        console.error(e)
       }
     },
     stop() {
       //core
       //fallingDestroy()
       try {
-      this.f.destroy()
+        this.f.destroy()
       } catch (e) {
         alert(e)
         console.error(e)
