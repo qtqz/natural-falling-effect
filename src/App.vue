@@ -25,25 +25,8 @@ export default {
   data() {
     return {
       naturalFallingConfig: {
-        open: true,
-        custom: true,
-        changeImg: true,
-        changeShow: true,
-        changeRain: true,
-        imgSetting: [],
-        imgNumSetting: [40, 40, 80, 60],
-        showSetting: {
-          fadeIn: true,
-          fadeOut: false,
-          time: 20
-        },
-        rainSetting: {
-          wind_speed: 50,
-          wind_deviation: 4,
-          wind_angle: 255,
-          hasBounce: true
-        },
-        wind_x: null//-50//-50null
+        //open: true,
+        imgNumSetting: [40, 40, 80, 50],
       },
     }
   },

@@ -3,34 +3,16 @@
 // License: MIT
 
 /**
-{
-    open: true,//总开关
-    custom: true,//总自定义开关，仅访客的有效，如果单独使用js，访客不能自定义
-    changeImg: true,//子自定义开关，**仅访客的有效**
-    changeShow: true,//子自定义开关，**仅访客的有效**
-    changeRain: true,//子自定义开关，**仅访客的有效**
-    imgSetting: [],//图案，有['petal','leaf','snow','rain']
-    imgNumSetting: [40, 40, 80, 60],//每个图案的数量
-    showSetting: {
-        fadeIn: true,//淡入（下雨始终淡入）
-        fadeOut: false,//淡出
-        time: 20//几秒后开始淡出
-    },
-    rainSetting: {
-        wind_speed: 70,//风力
-        wind_deviation: 4,//横向风力误差
-        wind_angle: 255,//风向，从+x方向逆时针角度，270为垂直向下
-        hasBounce: true,//落地溅水花
-    },
-    gravity: 0.163,//重力，**访客不可修改**
-    zIndex: 100,//自定义canvas的css z-index，可以实现不遮挡网页正文
-    imgSize: [40, 40, 2.5],//图案大小（花瓣，树叶，天雪），**访客不可修改**，雨滴的大小跟风力有关
-    wind_x: null// -35//前三种图案飘落横向风力，正负决定方向
-}
+
+备忘：
+090+：展平配置，取消判断自定义项是否开启，改为完全由 vue 判断处理
+
  */
 
 
-
+/**
+ * 
+ */
 export const version = '0.9.0';
 
 /**
@@ -42,35 +24,26 @@ export const version = '0.9.0';
 class FallingConfig {
   static DEFAULT = {
     open: true,
-    custom: true,
-    changeImg: true,
-    changeShow: true,
-    changeRain: true,
     imgSetting: [],
     imgNumSetting: [40, 40, 80, 60],
-    showSetting: {
-      fadeIn: true,
-      fadeOut: false,
-      time: 20
-    },
-    rainSetting: {
-      wind_speed: 70,
-      wind_deviation: 4,
-      wind_angle: 255,
-      hasBounce: true
-    },
+    fadeIn: true,
+    fadeOut: false,
+    fadeOut_time: 20,
+    rain_speed: 50,
+    rain_deviation: 4,
+    rain_angle: 260,
+    rain_hasBounce: true,
     gravity: 0.163,
     zIndex: 100,
     imgSize: [40, 40, 2.5],
-    wind_x: null
+    wind_x: 0
   };
 
-  constructor(masterConfig = {}, clientConfig = {}) {
+  constructor(masterConfig = {}) {
     //合并配置，无需再传入整个自定义配置
     this.config = {
       ...FallingConfig.DEFAULT,
-      ...masterConfig,
-      ...clientConfig
+      ...masterConfig
     };
     //this.validateConfig();
   }
@@ -87,9 +60,9 @@ class FallingConfig {
 
   getEffectConfig(type) {
     const baseConfig = {
-      fadeIn: this.config.showSetting.fadeIn,
-      fadeOut: this.config.showSetting.fadeOut,
-      fadeOutTime: this.config.showSetting.time,
+      fadeIn: this.config.fadeIn,
+      fadeOut: this.config.fadeOut,
+      fadeOutTime: this.config.fadeOut_time,
       zIndex: this.config.zIndex,
       gravity: this.config.gravity,
       wind_x: this.config.wind_x
@@ -110,10 +83,12 @@ class FallingConfig {
       },
       rain: {
         count: this.config.imgNumSetting[3],
-        ...this.config.rainSetting
+        rain_speed: this.config.rain_speed,
+        rain_deviation: this.config.rain_deviation,
+        rain_angle: this.config.rain_angle,
+        rain_hasBounce: this.config.rain_hasBounce,
       }
     };
-
 
     return {
       ...baseConfig,
@@ -130,10 +105,6 @@ const loadImages = () => {
     leaf2: new Image()
   };
 
-  // Base64 encoded image data
-  //images.petal.src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1em' height='1em' viewBox='0 0 24 24'%3E%3Cpath fill='%23888888' d='M4 3h16a1 1 0 0 1 1 1v16a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1m7 8H7v2h4v4h2v-4h4v-2h-4V7h-2z'/%3E%3C/svg%3E"
-  //images.leaf1.src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1em' height='1em' viewBox='0 0 24 24'%3E%3Cpath fill='%23888888' d='M4 3h16a1 1 0 0 1 1 1v16a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1m7 8H7v2h4v4h2v-4h4v-2h-4V7h-2z'/%3E%3C/svg%3E"
-  //images.leaf2.src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1em' height='1em' viewBox='0 0 24 24'%3E%3Cpath fill='%23888888' d='M4 3h16a1 1 0 0 1 1 1v16a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1m7 8H7v2h4v4h2v-4h4v-2h-4V7h-2z'/%3E%3C/svg%3E"
   images.petal.src =
     'data:image/png;base64,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'
 
@@ -301,9 +272,9 @@ class Rain extends FallingElement {
   }
 
   updateVelocity() {
-    const angleRad = this.config.wind_angle * 0.017; // 转换为弧度
-    this.speed = 30 * (Math.random() - 0.5) + this.config.wind_speed;
-    this.vx = this.speed * Math.cos(angleRad) + (Math.random() - 0.5) * this.config.wind_deviation;
+    const angleRad = this.config.rain_angle * 0.017; // 转换为弧度
+    this.speed = 20 * (Math.random() - 0.5) + this.config.rain_speed;
+    this.vx = this.speed * Math.cos(angleRad) + (Math.random() - 0.5) * this.config.rain_deviation;
     this.vy = -this.speed * Math.sin(angleRad);
     this.px = this.x; // 保存前一帧位置用于画线
     this.py = this.y;
@@ -329,8 +300,8 @@ class Rain extends FallingElement {
       if (this.config.isTimeOver && this.slowlyStop()) return false;
 
       // 创建水花效果
-      if (this.config.hasBounce) {
-        const bounceCount = Math.round(4 + Math.random() * 4);
+      if (this.config.rain_hasBounce) {
+        const bounceCount = Math.round(2 + Math.random() * 3.5);
         for (let i = 0; i < bounceCount; i++) {
           this.bounces.push(new Bounce(this.x, this.config.height, this.config));
         }
@@ -339,7 +310,7 @@ class Rain extends FallingElement {
       this.reset();
       this.px = this.x;
       this.py = this.y;
-      this.vy = -this.speed * Math.sin(this.config.wind_angle * 0.017);
+      this.vy = -this.speed * Math.sin(this.config.rain_angle * 0.017);
     }
 
     if (this.x > this.config.width) {
@@ -375,8 +346,8 @@ class Bounce {
     this.x = x;
     this.y = y;
     this.config = config;
-    this.radius = 0.2 + Math.random() * 0.8;
-    const dist = Math.random() * config.wind_speed / 12;
+    this.radius = 0.5 + Math.random() * 0.8;
+    const dist = Math.random() * Math.max(config.rain_speed / 12, 3);
     const angle = Math.PI + Math.random() * Math.PI;
     this.vx = Math.cos(angle) * dist;
     this.vy = Math.sin(angle) * dist;
@@ -396,7 +367,6 @@ class Bounce {
     ctx.beginPath();
     ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
     ctx.fill();
-
   }
 }
 
@@ -440,8 +410,8 @@ class FallingEffect {
       this.config.size -= 0.3
     }
     else if (this.type === 'rain') {
-      this.config.wind_speed = this.config.wind_speed / 1.5
-      this.config.wind_deviation = this.config.wind_deviation / 1.5
+      this.config.rain_speed = this.config.rain_speed / 1.5
+      this.config.rain_deviation = this.config.rain_deviation / 1.5
     }
     else this.config.size = Math.floor(this.config.size / 1.2)
     this.config.count = Math.floor(this.config.count / 2.2)
@@ -606,4 +576,4 @@ export function fallingCreate(masterConfig, clientConfig) {
 }
 
 // 默认配置导出
-//export const defaultConfig = FallingConfig.DEFAULT;
+export const defaultConfig = FallingConfig.DEFAULT;

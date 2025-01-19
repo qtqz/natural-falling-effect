@@ -12,67 +12,69 @@
             v-model="guestConfig.open">
         </div>
         <div style="float: right;"><label for="oc">开启自定义选项 </label><input
-            style="width: 1.3rem;height: 1.3rem;vertical-align: sub;" type="checkbox" id="oc"
-            v-model="guestConfig.custom" :disabled="!guestConfig.open"></div>
+            style="width: 1.3rem;height: 1.3rem;vertical-align: sub;" type="checkbox" id="oc" v-model="customSwitch"
+            :disabled="!guestConfig.open"></div>
       </h3>
       <hr style="width: 96%;margin: 0 auto;">
       <br>
       <div class="option-row">
-        <div class="option-mask" v-show="!guestConfig.custom || !guestConfig.open"></div>
+        <div class="option-mask" v-show="!customSwitch || !guestConfig.open"></div>
         <div class="option-col">
-          <div class="f-type"><input type="checkbox" id="ci" v-model="guestConfig.changeImg"><label
-              for="ci">自定义图案</label>
+          <div class="f-type"><!-- <input type="checkbox" id="ci" v-model="customSwitch.changeImg"> --><label for="ci">
+              自定义图案</label>
           </div>
-          <div><input type="checkbox" id="petal" value="petal" v-model="guestConfig.imgSetting" checked
-              :disabled="!guestConfig.changeImg"><label for="petal">花瓣</label> <input style="width: 3em;" type="number"
+          <div><input type="checkbox" id="petal" value="petal" v-model="guestConfig.imgSetting"
+              :disabled="!customSwitch"><label for="petal">花瓣</label> <input style="width: 3em;" type="number"
               v-model="guestConfig.imgNumSetting[0]"
-              :disabled="!guestConfig.imgSetting.includes('petal') || !guestConfig.changeImg"> 个
+              :disabled="!guestConfig.imgSetting.includes('petal') || !customSwitch"> 个
           </div>
           <div><input type="checkbox" id="leaf" value="leaf" v-model="guestConfig.imgSetting"
-              :disabled="!guestConfig.changeImg"><label for="leaf">落叶</label> <input style="width: 3em;" type="number"
+              :disabled="!customSwitch"><label for="leaf">落叶</label> <input style="width: 3em;" type="number"
               v-model="guestConfig.imgNumSetting[1]"
-              :disabled="!guestConfig.imgSetting.includes('leaf') || !guestConfig.changeImg"> 个
+              :disabled="!guestConfig.imgSetting.includes('leaf') || !customSwitch"> 个
           </div>
           <div><input type="checkbox" id="snow" value="snow" v-model="guestConfig.imgSetting"
-              :disabled="!guestConfig.changeImg"><label for="snow">雪花</label> <input style="width: 3em;" type="number"
+              :disabled="!customSwitch"><label for="snow">雪花</label> <input style="width: 3em;" type="number"
               v-model="guestConfig.imgNumSetting[2]"
-              :disabled="!guestConfig.imgSetting.includes('snow') || !guestConfig.changeImg"> 个
+              :disabled="!guestConfig.imgSetting.includes('snow') || !customSwitch"> 个
           </div>
           <div><input type="checkbox" id="rain" value="rain" v-model="guestConfig.imgSetting"
-              :disabled="!guestConfig.changeImg"><label for="rain">雨点</label> <input style="width: 3em;" type="number"
+              :disabled="!customSwitch"><label for="rain">雨点</label> <input style="width: 3em;" type="number"
               v-model="guestConfig.imgNumSetting[3]"
-              :disabled="!guestConfig.imgSetting.includes('rain') || !guestConfig.changeImg"> 个
+              :disabled="!guestConfig.imgSetting.includes('rain') || !customSwitch"> 个
           </div>
         </div>
         <div class="option-col">
-          <div class="f-show"><input type="checkbox" id="cs" v-model="guestConfig.changeShow"><label
-              for="cs">自定义显示</label></div>
-          <div><input type="checkbox" id="fi" v-model="guestConfig.showSetting.fadeIn"
-              :disabled="!guestConfig.changeShow"><label for="fi">淡入</label>
+          <div class="f-show"><!-- <input type="checkbox" id="cs" v-model="customSwitch.changeShow"> --><label for="cs">
+              自定义显示</label></div>
+          <div><input type="checkbox" id="fi" v-model="guestConfig.fadeIn" :disabled="!customSwitch"><label
+              for="fi">淡入</label>
           </div>
-          <div><input type="checkbox" id="fo" v-model="guestConfig.showSetting.fadeOut"
-              :disabled="!guestConfig.changeShow"><label for="fo">淡出</label>
+          <div><input type="checkbox" id="fo" v-model="guestConfig.fadeOut" :disabled="!customSwitch"><label
+              for="fo">淡出</label>
           </div>
-          <div><input style="width: 2.5em;" type="number" v-model="guestConfig.showSetting.time"
-              :disabled="!guestConfig.changeShow || !guestConfig.showSetting.fadeOut"> 秒消失</div>
+          <div><input style="width: 2.5em;" type="number" v-model="guestConfig.fadeOut_time"
+              :disabled="!customSwitch || !guestConfig.fadeOut"> 秒消失</div>
+          <div title="除下雨以外的风力，建议留空或填“-50”"><input style="width: 2.5em;" type="number" v-model="guestConfig.wind_x"
+              :disabled="!customSwitch"> 风力 ❔</div>
         </div>
         <div class="option-col">
-          <div class="f-rain"><input type="checkbox" id="cr" v-model="guestConfig.changeRain"><label
-              for="cr">下雨设置</label>
+          <div class="f-rain"><!-- <input type="checkbox" id="cr" v-model="customSwitch.changeRain"> --><label for="cr">
+              下雨设置</label>
           </div>
-          <div><input style="width: 3em;" type="number" v-model="guestConfig.rainSetting.wind_speed"
-              :disabled="!guestConfig.changeRain"> 风力</div>
-          <div><input style="width: 3em;" type="number" v-model="guestConfig.rainSetting.wind_angle"
-              :disabled="!guestConfig.changeRain"><span title="从+x方向逆时针的角度，270为垂直向下"> 风向 ❔</span></div>
-          <div><input style="width: 3em;" type="number" v-model="guestConfig.rainSetting.wind_deviation"
-              :disabled="!guestConfig.changeRain"> 横向风误差</div>
-          <div><input type="checkbox" id="bo" v-model="guestConfig.rainSetting.hasBounce"
-              :disabled="!guestConfig.changeRain"><label for="bo">落地水花</label>
+          <div><input style="width: 3em;" type="number" v-model="guestConfig.rain_speed" :disabled="!customSwitch"> 下雨风力
+          </div>
+          <div><input style="width: 3em;" type="number" v-model="guestConfig.rain_angle" :disabled="!customSwitch"><span
+              title="从+x方向逆时针的角度，270为垂直向下"> 下雨风向 ❔</span></div>
+          <!-- v-show="false"<div><input style="width: 3em;" type="number" v-model="guestConfig.rainSetting.wind_deviation"
+              :disabled="!customSwitch.changeRain"> 横向风误差</div>-->
+          <div><input type="checkbox" id="bo" v-model="guestConfig.rain_hasBounce" :disabled="!customSwitch"><label
+              for="bo">落地水花</label>
           </div>
         </div>
       </div>
-      <div class="nf-text">
-        <p v-show="false">{{ guestConfig }}</p>
+      <div class="nf-text" style="display: none;">
+        <p>{{ guestConfig }}</p>
         <p>每个子自定义开关如未勾选，其设置将不生效，并且以网站默认设置为准。若未选择图案，将根据季节自动展示。</p>
         <p>所有配置会保存到本地缓存，当网站配置或程序更新后，用户配置将被重置。</p>
       </div>
@@ -110,7 +112,7 @@ export default {
     masterConfig: {
       type: Object,
       default() {
-        return defaultConfig
+        return {}
       }
     },
     buttonClass: {
@@ -126,7 +128,9 @@ export default {
       //showWindow: true,
       showWindow: false,
       guestConfig: {},
-      myVersion: '0.7.3',
+      masterConfig_full: {},//必须要有，因为要在面板中显示默认值，并且作为备份用于重置
+      customSwitch: false,
+      myVersion: '0.8.0',
       jsVersion: version,
       easyModeFallingFlag: true,
       f: null
@@ -137,17 +141,17 @@ export default {
       localStorage.setItem("guestConfig", JSON.stringify(this.guestConfig))
       this.stop()
       setTimeout(() => {
-        this.start(this.masterConfig, this.guestConfig)
+        if (this.customSwitch == false) {
+          this.reset()
+        } else this.guestConfig.custom = true//用于记忆到缓存
+        this.start(/* this.masterConfig ,*/ this.guestConfig)
       }, 1000)
     },
     reset() {
-      this.guestConfig = JSON.parse(JSON.stringify(this.masterConfig))
+      this.guestConfig = JSON.parse(JSON.stringify(this.masterConfig_full))
       localStorage.removeItem("guestConfig")
       localStorage.removeItem("configVersion")
-      this.guestConfig.custom = false
-      this.guestConfig.changeImg = false
-      this.guestConfig.changeShow = false
-      this.guestConfig.changeRain = false
+      this.customSwitch = false
     },
     confirm() {
       this.showWindow = false
@@ -159,15 +163,15 @@ export default {
     turn() {
       if (this.easyMode) {
         if (this.easyModeFallingFlag) this.stop()
-        else this.start(this.masterConfig, this.guestConfig)
+        else this.start(/* this.masterConfig,  */this.guestConfig)
         this.easyModeFallingFlag = !this.easyModeFallingFlag
       }
       else this.showWindow = !this.showWindow
     },
-    start(ms, s) {
+    start(s) {
       //core
       try {
-        this.f = fallingCreate(ms, s)
+        this.f = fallingCreate(s)
       } catch (e) {
         alert(e)
         console.error(e)
@@ -175,7 +179,6 @@ export default {
     },
     stop() {
       //core
-      //fallingDestroy()
       try {
         this.f.destroy()
       } catch (e) {
@@ -185,7 +188,11 @@ export default {
     },
   },
   created() {
-    this.guestConfig = JSON.parse(JSON.stringify(this.masterConfig))
+    this.masterConfig_full = {
+      ...defaultConfig,
+      ...this.masterConfig
+    }
+    this.guestConfig = JSON.parse(JSON.stringify(this.masterConfig_full))
   },
   mounted() {
     console.log(`The initial.`)
@@ -201,12 +208,15 @@ export default {
 
     if (oldVersion == newVersion && old) {
       this.guestConfig = old
+      if (this.guestConfig.custom == true) {
+        this.customSwitch = true
+      }
     } else if (oldVersion != newVersion && oldVersion) {
       console.log('updated')
       this.reset()
     }
     this.easyModeFallingFlag = this.guestConfig.open
-    this.start(this.masterConfig, this.guestConfig)
+    this.start(this.guestConfig)
     /**
      * 
      * TO DO
@@ -215,6 +225,7 @@ export default {
      * 适配移动端*
      * 可以配置风的方向*
      * 窗口隐藏动画
+     * 潜在问题：自定义会把所有项都定死，无法被动随主人更改
      */
   },
   unmounted() {
@@ -321,15 +332,6 @@ a {
   cursor: not-allowed;
 }
 
-.option-col>div {
-  padding-left: 1.3em;
-}
-
-.option-col>div:first-child {
-  padding-left: 0;
-  margin-bottom: 10px;
-}
-
 .nf-text {
   font-size: 14px;
   border: 1px #ccc solid;
@@ -347,12 +349,16 @@ a {
   content: '⏱️';
 }
 
-.f-test::before {
-  content: '🔨';
-}
-
 .f-rain::before {
   content: '🌧️';
+}
+
+.f-type::before,
+.f-show::before,
+.f-rain::before {
+  position: absolute;
+  left: -1.5em;
+  font-size: 1.5rem;
 }
 
 .nf-container {
@@ -395,10 +401,14 @@ a {
 .btn-list {
   display: flex;
   justify-content: space-around;
-  width: 250px;
-  margin: 0.5em auto;
+  width: 280px;
+  margin: 1.5em auto;
   line-height: 1.7em;
   text-align: center;
+}
+
+.btn-list button{
+  font-size: 1rem;
 }
 
 .nf-mask {
@@ -431,24 +441,40 @@ a {
 
 .option-col {
   min-height: 150px;
-  width: 24%;
+  width: 26%;
   margin: 4px 0;
   box-sizing: border-box;
   position: relative;
+  padding-left: 1.4em;
+}
+
+.option-col>div {
+  padding-left: 3px;
+  position: relative;
+}
+
+.option-col>div:first-child {
+  /* padding-left: 0; */
+  margin-bottom: 10px;
+  line-height: 1.5em;
 }
 
 .option-col:after {
   content: "";
   position: absolute;
-  right: -18%;
-  top: 8%;
-  height: 70%;
+  right: -16px;
+  top: 24%;
+  height: 56%;
   width: 1px;
   border-left: 2px solid rgba(0, 0, 0, .2);
 }
 
 .option-col:last-child:after {
   content: unset;
+}
+
+input[type="number"] {
+  margin-left: 3px;
 }
 
 @media screen and (max-width: 600px) {
