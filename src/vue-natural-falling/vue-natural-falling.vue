@@ -319,7 +319,7 @@ a {
 }
 
 .link-list {
-  margin-top: 2em;
+  margin-top: 1em;
   width: 100%;
 }
 
@@ -368,10 +368,8 @@ a {
 .nf-main {
   position: fixed;
   box-sizing: border-box;
-  width: 800px;
   width: 750px;
-  min-height: 600px;
-  top: 60px;
+  /* min-height: 600px; */
   left: 50vw;
   top: 50vh;
   transform: translate(-50%, -50%);

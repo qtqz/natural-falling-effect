@@ -8,24 +8,25 @@ This is a special effects library that allows your page to float petals and leav
 
 核心 js 功能：
 
-* 漂亮的效果
-* 丰富的可配置项
-* 支持淡入淡出
-* 性能较好\*
+* ✨漂亮的效果
+* 📦整合 4 种特效：落花🌸，落叶🍂，下雨🌧️，下雪❄️
+* ⚙️丰富的可配置项
+* ⌛支持淡入淡出，定时关闭
+* ⚡性能较好
 
 Vue 组件额外功能：
 
-* 访客可以自定义配置
-* 支持简单模式/自定义入口按钮
-* GUI 适配暗黑模式、适配移动端
+* 🛠️访客可以自定义配置
+* 👶支持简单模式/自定义入口按钮
+* 📱GUI 适配暗黑模式、移动端
 
 ## 预览
 
-838
+![](./demo.webp)
 
-也可以下载此示例仓库来试用。此时由于此仓库用了`pnpm-workspace`功能，此时你必须使用 pnpm 。
+也可以访问演示页面：[https://qtqz.github.io/natural-falling-effect/](https://qtqz.github.io/natural-falling-effect/)。
 
-代码经过多次优化，目前性能已经比许多同类项目要好。
+代码经过多次优化，目前性能已经比许多同类项目要好。并且在高刷新率设备上也可以正常运行。
 
 ## 使用
 

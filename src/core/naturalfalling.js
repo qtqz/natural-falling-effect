@@ -370,6 +370,8 @@ class Bounce {
   }
 }
 
+// 用于移除监听器
+var fn = () => this.resizeCanvas()
 
 /**
  * 主效果控制类
@@ -441,7 +443,7 @@ class FallingEffect {
     document.body.appendChild(this.canvas);
 
     // 监听窗口大小变化
-    window.addEventListener('resize', () => this.resizeCanvas());
+    window.addEventListener('resize', fn);
   }
 
   resizeCanvas() {
@@ -520,6 +522,7 @@ class FallingEffect {
     this.canvas = null
     this.ctx = null
     this.config = null
+    removeEventListener('resize', fn)
   }
 }
 
