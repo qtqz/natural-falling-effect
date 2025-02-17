@@ -53,12 +53,37 @@ pnpm i natural-falling-js
 
 然后引入：`import { fallingCreate, version, defaultConfig } from 'natural-falling-js'`
 
-调用说明：
+调用说明与示例：
 
 * `let f = fallingCreate(/*配置对象*/)`传入一个配置对象（可以只传想修改的属性），不传则用默认配置。它将返回它的结束接口。
 * `f.destroy()`调用上一条语句返回的结束接口，可以立即结束特效。
 * `version`为当前 js 版本号。
 * `defaultConfig`默认配置。
+
+```vue
+<script lang="ts" setup>
+import { ref, onMounted, onUnmounted } from 'vue'
+// @ts-ignore
+import { fallingCreate } from 'natural-falling-js'
+
+const cfg = {
+  open: true,
+  imgNumSetting: [10, 10, 50, 20],
+  fadeOut: true,
+  fadeOut_time: 20
+}
+let openFall = true,
+  f = ref()
+
+onMounted(() => {
+  openFall ? f.value = fallingCreate(cfg) : 0
+})
+
+onUnmounted(() => {
+  openFall ? f.value.destory() : 0
+})
+</script>
+```
 
 详细配置和默认的配置说明：
 

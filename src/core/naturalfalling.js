@@ -233,7 +233,7 @@ class Snow extends FallingElement {
 
   updateVelocity() {
     this.vx = this.config.wind_x ? this.config.wind_x / 40 : 2.5 * (Math.random() - 0.5);
-    this.vy = 1 + Math.random() * this.config.gravity * 5;
+    this.vy = 0.8 + Math.random() * this.config.gravity * 5;
   }
 
   update() {
@@ -542,7 +542,12 @@ function getSeason() {
   return 'snow';
 }
 
-// 对外导出的主函数
+/**
+ * 对外导出的主函数
+ * @param {object} masterConfig 
+ * @param {object|null} clientConfig 
+ * @returns 
+ */
 export function fallingCreate(masterConfig, clientConfig) {
   const config = new FallingConfig(masterConfig, clientConfig);
   const effects = [];
