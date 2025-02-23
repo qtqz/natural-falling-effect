@@ -544,12 +544,11 @@ function getSeason() {
 
 /**
  * 对外导出的主函数
- * @param {object} masterConfig 
- * @param {object|null} clientConfig 
- * @returns 
+ * @param {Object} masterConfig 
+ * @returns {*}
  */
-export function fallingCreate(masterConfig, clientConfig) {
-  const config = new FallingConfig(masterConfig, clientConfig);
+export function fallingCreate(masterConfig) {
+  const config = new FallingConfig(masterConfig);
   const effects = [];
   const images = loadImages();
   if (!config.config.open) {
@@ -560,9 +559,7 @@ export function fallingCreate(masterConfig, clientConfig) {
 
   // 确定要创建的效果类型
   let types = [];
-  if (config.config.custom && config.config.changeImg && clientConfig?.imgSetting?.length > 0) {
-    types = clientConfig.imgSetting;
-  } else if (masterConfig?.imgSetting?.length > 0) {
+  if (masterConfig?.imgSetting?.length > 0) {
     types = masterConfig.imgSetting;
   }
   if (types.length == 0) types = [getSeason()]

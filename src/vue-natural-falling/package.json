@@ -1,6 +1,6 @@
 {
   "name": "vue-natural-falling",
-  "version": "0.8.0",
+  "version": "0.8.2",
   "private": false,
   "type": "module",
   "main": "./vue-natural-falling.vue",
@@ -10,7 +10,8 @@
     ".": {
       "require": "./main.js",
       "import": "./main.js"
-    }
+    },
+    "types": "./vue-natural-falling.d.vue.ts"
   },
   "scripts": {},
   "dependencies": {

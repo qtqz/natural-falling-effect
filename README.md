@@ -2,14 +2,14 @@
 
 ## 介绍
 
-这是一个让你的页面可以**飘落花瓣树叶、下雨下雪**的特效库，支持自定义配置。支持以 **js 模块**或 **vue 组件**形式使用。使用 js 绘制 canvas 实现。
+来欣赏一年四季的景色！这是一个让你的页面可以**飘落花瓣树叶、下雨下雪**的特效库，支持自定义配置。支持以 **js 模块**或 **vue 组件**形式使用。使用 js 绘制 canvas 实现。
 
-This is a special effects library that allows your page to float petals and leaves, rain and snow, and supports custom configuration. Support the use of **js modules** or **Vue components**.It is implemented using JavaScript to draw canvas.
+Come and enjoy the scenery all year round! This is a special effects library that allows your page to float petals and leaves, rain and snow, and supports custom configuration. Support the use of **js modules** or **Vue components**. It is implemented using JavaScript to draw canvas.
 
 核心 js 功能：
 
 * ✨漂亮的效果
-* 📦整合 4 种特效：落花🌸，落叶🍂，下雨🌧️，下雪❄️
+* 📦为一年四季整合 4 种特效：落花🌸，落叶🍂，下雨🌧️，下雪❄️
 * ⚙️丰富的可配置项
 * ⌛支持淡入淡出，定时关闭
 * ⚡性能较好
@@ -56,7 +56,7 @@ pnpm i natural-falling-js
 调用说明与示例：
 
 * `let f = fallingCreate(/*配置对象*/)`传入一个配置对象（可以只传想修改的属性），不传则用默认配置。它将返回它的结束接口。
-* `f.destroy()`调用上一条语句返回的结束接口，可以立即结束特效。
+* `f.destroy()`调用上一条语句返回的结束接口，可以立即结束特效，停止消耗性能。
 * `version`为当前 js 版本号。
 * `defaultConfig`默认配置。
 
@@ -80,7 +80,7 @@ onMounted(() => {
 })
 
 onUnmounted(() => {
-  openFall ? f.value.destory() : 0
+  openFall ? f.value.destroy() : 0
 })
 </script>
 ```
@@ -120,14 +120,17 @@ pnpm i vue-natural-falling
 然后引入：`import VueNaturalFalling from 'vue-natural-falling'`
 
 ```vue
-  <VueNaturalFalling :masterConfig="naturalFallingConfig" :buttonClass="''" :easyMode="false" />
+  <VueNaturalFalling :masterConfig="naturalFallingConfig" :easyMode="false"  :hide="false"/>
 ```
 
-* `masterConfig: object` 配置，不传则用默认配置，详见[上一节](#核心 js)。
-* `buttonClass: string` 自定义入口按钮，传入按钮的 CSS 类名，允许你将默认按钮换成自己的，有助于页面风格一致。组件挂载时其必须存在于 DOM 树中。
-* `easyMode: boolean` 简单模式，默认关闭，传入`true`启用，会将入口按钮的用途从**开关界面**改为**开关特效**。
+vue 组件**允许访客自由控制特效**并将配置保存到本地，当 js 版本号或主人配置更改后，访客本地的配置会被重置。按钮和面板都通过`<Teleport to="body">`显示到`<body>`中。
 
-另外，将此组件置于`dark`类名下，即可启用暗色模式。
+* `masterConfig: Object` 配置，不传则用默认配置，详见[上一节](#核心 js)。
+* 已弃用 ~~`buttonClass: String` 自定义入口按钮，传入按钮的 CSS 类名，允许你将默认按钮换成自己的，有助于页面风格一致。组件挂载时其必须存在于 DOM 树中。~~
+* `easyMode: Boolean` 简单模式，默认关闭，传入`true`启用，会将入口按钮的用途从**开关面板**改为**开关特效**。
+* `hide: Boolean` 隐藏按钮，默认关闭，隐藏后页面上不出现按钮，同时你可以通过`document.querySelector('.nf-button').click()`来实现点击按钮的效果。相比传入自定义入口按钮，现在这种方式更**灵活**。
+
+另外，为`<html>`或`<body>`添加`dark`类名，即可启用暗色模式。
 
 ## 支持我
 
@@ -146,7 +149,9 @@ pnpm i vue-natural-falling
 - js 0.8.0：优化小屏幕显示，整理越来越乱的代码 :（
 - js 0.8.1：更好地判断季节（大致根据节气区间）
 - js 0.9.0：彻底重构
+- js 0.9.1：减慢雪花下落
 - vue 0.8.0：大幅简化和完善
+- vue 0.8.2：为面板添加过渡动画，参数变动
 
 ## 许可证与参考
 
