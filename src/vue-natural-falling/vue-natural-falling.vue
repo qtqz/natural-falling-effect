@@ -110,12 +110,11 @@ export default {
   },
   data() {
     return {
-      //showWindow: true,
       showWindow: false,
       guestConfig: {},//是一个基于masterConfig_full修改的完整配置
       masterConfig_full: {},//必须要有，因为要在面板中显示默认值，并且作为备份用于重置
       customSwitch: false,
-      myVersion: '0.8.6',
+      myVersion: '0.8.7',
       jsVersion: version,
       easyModeFallingFlag: true,
       f: null
@@ -200,16 +199,6 @@ export default {
     this.easyModeFallingFlag = this.guestConfig.open
     this.start(this.guestConfig)
     console.log(old, this.guestConfig);
-    /**
-     * 
-     * TO DO
-     * 简洁模式（仅允许用户总开关）*
-     * 自定义外部按钮*
-     * 适配移动端*
-     * 可以配置风的方向*
-     * 窗口隐藏动画*
-     * 潜在问题：自定义会把所有项都定死，无法被动随主人更改*
-     */
   },
   unmounted() {
     this.stop()
@@ -217,7 +206,7 @@ export default {
 }
 </script>
 
-<style lang="scss">
+<style lang="css">
 .nf-container {
   position: fixed;
   display: flex;
@@ -291,24 +280,24 @@ export default {
   margin-top: 1em;
   width: 100%;
   vertical-align: middle;
+}
 
-  .v {
-    border-radius: 4px;
-    border: 2px rgba(205, 205, 205, 0.6) solid;
-    font-family: 'Times New Roman', Times, serif;
-    font-style: italic;
-    padding: 0 0.3em !important;
-  }
+.nf-link-list .v {
+  border-radius: 4px;
+  border: 2px rgba(205, 205, 205, 0.6) solid;
+  font-family: 'Times New Roman', Times, serif;
+  font-style: italic;
+  padding: 0 0.3em !important;
+}
 
-  a {
-    text-decoration: none;
-    color: dodgerblue;
-  }
+.nf-link-list a {
+  text-decoration: none;
+  color: dodgerblue;
+}
 
-  img,
-  svg {
-    display: inline-block;
-  }
+.nf-link-list img,
+.nf-link-list svg {
+  display: inline-block;
 }
 
 .nf-link-list>div>span {
@@ -341,22 +330,22 @@ export default {
   transition: opacity 0.2s;
   opacity: 1;
   pointer-events: initial;
+}
 
-  h2 {
-    font-size: 1.5rem;
-  }
+.nf-main h2 {
+  font-size: 1.5rem;
+}
 
-  h3 {
-    font-size: 1.25rem;
-    width: 100%;
-    padding: 0 1rem;
+.nf-main h3 {
+  font-size: 1.25rem;
+  width: 100%;
+  padding: 0 1rem;
+}
 
-    input {
-      width: 1.25rem;
-      height: 1.25rem;
-      vertical-align: middle;
-    }
-  }
+.nf-main h3 input {
+  width: 1.25rem;
+  height: 1.25rem;
+  vertical-align: middle;
 }
 
 .nf-main>* {
@@ -386,35 +375,35 @@ export default {
   display: flex;
   flex-direction: column;
   gap: 4px;
+}
 
-  input[type="checkbox"] {
-    width: 18px;
-    height: 18px;
-    vertical-align: middle;
-    margin-right: 4px;
-  }
+.nf-option-group input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  vertical-align: middle;
+  margin-right: 4px;
+}
 
-  input[type="number"] {
-    margin-left: 3px;
-    width: 3.125em;
-    border-width: 1px;
-    padding: 0 2px;
-    height: 1.5em;
-    border-color: light-dark(rgb(118, 118, 118), rgb(133, 133, 133));
-    background-color: field;
-    border-radius: 4px;
-  }
+.nf-option-group input[type="number"] {
+  margin-left: 3px;
+  width: 3.125em;
+  border-width: 1px;
+  padding: 0 2px;
+  height: 1.5em;
+  border-color: light-dark(rgb(118, 118, 118), rgb(133, 133, 133));
+  background-color: field;
+  border-radius: 4px;
+}
 
-  input:disabled {
-    cursor: not-allowed;
-    background-color: light-dark(rgba(239, 239, 239, 0.3), rgba(59, 59, 59, 0.3));
-    color: light-dark(rgb(84, 84, 84), rgb(170, 170, 170));
-    border-color: rgba(118, 118, 118, 0.3);
-  }
+.nf-option-group input:disabled {
+  cursor: not-allowed;
+  background-color: light-dark(rgba(239, 239, 239, 0.3), rgba(59, 59, 59, 0.3));
+  color: light-dark(rgb(84, 84, 84), rgb(170, 170, 170));
+  border-color: rgba(118, 118, 118, 0.3);
+}
 
-  label {
-    cursor: inherit;
-  }
+.nf-option-group label {
+  cursor: inherit;
 }
 
 .nf-option-group>div {
@@ -433,28 +422,6 @@ export default {
 
 .nf-option-group:last-child:after {
   content: unset;
-}
-
-.dark {
-  .nf-button {
-    background-color: rgba(255, 255, 255, 0.7);
-  }
-
-  .nf-main {
-    background-color: rgb(37, 45, 56);
-    box-shadow: 2px 2px 15px #111;
-    color: rgba(255, 255, 255, 0.86);
-  }
-
-  .nf-option-grid {
-    background-color: rgb(37, 45, 56);
-    box-shadow: 2px 2px 15px #111;
-    border: 1px solid rgba(0, 0, 0, 0.2);
-  }
-
-  .nf-option-group:after {
-    border-left: 2px solid rgba(255, 255, 255, 0.5);
-  }
 }
 
 /* 输入框基础样式 */
@@ -515,11 +482,40 @@ export default {
 .nf-section {
   font-size: 16px;
   font-weight: 600;
+  /**/
   color: #303133;
   margin: 0 0 10px 0;
   padding-bottom: 8px;
   border-bottom: 1px solid #ebeef5;
   line-height: 1.5em;
+}
+
+.dark .nf-button {
+  background-color: rgba(255, 255, 255, 0.7);
+}
+
+.dark .nf-main {
+  background-color: rgb(37, 45, 56);
+  box-shadow: 2px 2px 15px #111;
+  color: #ffffffdb;
+}
+
+.dark .nf-section {
+  color: #ffffffdb;
+}
+
+.dark .nf-btn {
+  color: #000;
+}
+
+.dark .nf-option-grid {
+  background-color: rgb(37, 45, 56);
+  box-shadow: 2px 2px 15px #111;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+}
+
+.dark .nf-option-group:after {
+  border-left: 2px solid rgba(255, 255, 255, 0.5);
 }
 
 @media screen and (max-width: 600px) {

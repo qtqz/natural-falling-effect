@@ -59,6 +59,7 @@ pnpm i natural-falling-js
 * `f.destroy()`调用上一条语句返回的结束接口，可以立即结束特效，停止消耗性能。
 * `version`为当前 js 版本号。
 * `defaultConfig`默认配置。
+* 已知问题：花瓣有实验性的更柔和的淡入，其他图案没有。后续会重新设计更柔和的淡入
 
 ```vue
 <script lang="ts" setup>
@@ -128,7 +129,7 @@ vue 组件**允许访客自由控制特效**并将配置保存到本地，当 js
 * `masterConfig: Object` 配置，不传则用默认配置，详见[上一节](#核心 js)。
 * 已弃用 ~~`buttonClass: String` 自定义入口按钮，传入按钮的 CSS 类名，允许你将默认按钮换成自己的，有助于页面风格一致。组件挂载时其必须存在于 DOM 树中。~~
 * `easyMode: Boolean` 简单模式，默认关闭，传入`true`启用，会将入口按钮的用途从**开关面板**改为**开关特效**。
-* `hide: Boolean` 隐藏按钮，默认关闭，隐藏后页面上不出现按钮，同时你可以通过`document.querySelector('.nf-button').click()`来实现点击按钮的效果。相比传入自定义入口按钮，现在这种方式更**灵活**。
+* `hide: Boolean` 隐藏按钮，默认关闭，隐藏后页面上不出现按钮，同时你可以通过`document.querySelector('.nf-button').click()`来实现点击按钮的效果。相比传入自定义入口按钮，现在这种方式更**灵活**，无需考虑挂载顺序。
 
 另外，为`<html>`或`<body>`添加`dark`类名，即可启用暗色模式。
 
