@@ -1,17 +1,13 @@
 {
   "name": "vue-natural-falling",
-  "version": "0.8.2",
+  "version": "0.8.7",
   "private": false,
   "type": "module",
   "main": "./vue-natural-falling.vue",
   "repository": "https://github.com/qtqz/natural-falling-effect.git",
   "license": "MIT",
   "exports": {
-    ".": {
-      "require": "./main.js",
-      "import": "./main.js"
-    },
-    "types": "./vue-natural-falling.d.vue.ts"
+    ".": "./vue-natural-falling.vue"
   },
   "scripts": {},
   "dependencies": {

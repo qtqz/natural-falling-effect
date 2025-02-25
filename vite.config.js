@@ -8,6 +8,12 @@ export default defineConfig({
   plugins: [
     vue(),
   ],
+  css: {
+    preprocessorOptions: {
+      scss: {
+      }
+    }
+  },
   base: '/natural-falling-effect/',
   resolve: {
     alias: {

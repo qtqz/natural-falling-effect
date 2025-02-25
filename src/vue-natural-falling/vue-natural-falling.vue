@@ -5,100 +5,76 @@
     </div>
     <Transition name="nf">
       <div class="nf-container" v-show="showWindow">
-        <!--<div class="nf-mask" @click="cancel()"></div>-->
         <div class="nf-main">
           <h2>设定</h2>
-          <h3 style="width: 100%;padding: 0 1rem;">
-            <div style="float: left;"><label for="ts">总开关 </label><input
-                style="width: 1.3rem;height: 1.3rem;vertical-align: sub;" type="checkbox" id="ts"
-                v-model="guestConfig.open">
+          <h3>
+            <div style="float: left;"><label>总开关 <input type="checkbox" v-model="guestConfig.open"></label>
             </div>
-            <div style="float: right;"><label for="oc">开启自定义选项 </label><input
-                style="width: 1.3rem;height: 1.3rem;vertical-align: sub;" type="checkbox" id="oc" v-model="customSwitch"
-                :disabled="!guestConfig.open"></div>
+            <div style="float: right;"><label>开启自定义选项 <input type="checkbox" v-model="customSwitch"
+                  :disabled="!guestConfig.open"></label></div>
           </h3>
           <hr style="width: 96%;margin: 0 auto;">
-          <br>
-          <div class="option-row">
-            <div class="option-mask" v-show="!customSwitch || !guestConfig.open"></div>
-            <div class="option-col">
-              <div class="f-type"><!-- <input type="checkbox" id="ci" v-model="customSwitch.changeImg"> --><label
-                  for="ci">
-                  自定义图案</label>
+          <div class="nf-option-grid" :style="!customSwitch ? 'cursor: not-allowed;' : ''">
+            <div class="nf-option-group">
+              <div class="nf-section">
+                <span class="nf-emj">⛅</span><span>自定义图案</span>
               </div>
-              <div><input type="checkbox" id="petal" value="petal" v-model="guestConfig.imgSetting"
-                  :disabled="!customSwitch"><label for="petal">花瓣</label> <input style="width: 3em;" type="number"
-                  v-model="guestConfig.imgNumSetting[0]"
+              <div><label><input type="checkbox" value="petal" v-model="guestConfig.imgSetting"
+                    :disabled="!customSwitch">花瓣</label> <input type="number" v-model="guestConfig.imgNumSetting[0]"
                   :disabled="!guestConfig.imgSetting.includes('petal') || !customSwitch"> 个
               </div>
-              <div><input type="checkbox" id="leaf" value="leaf" v-model="guestConfig.imgSetting"
-                  :disabled="!customSwitch"><label for="leaf">落叶</label> <input style="width: 3em;" type="number"
-                  v-model="guestConfig.imgNumSetting[1]"
+              <div><label><input type="checkbox" value="leaf" v-model="guestConfig.imgSetting"
+                    :disabled="!customSwitch">落叶</label> <input type="number" v-model="guestConfig.imgNumSetting[1]"
                   :disabled="!guestConfig.imgSetting.includes('leaf') || !customSwitch"> 个
               </div>
-              <div><input type="checkbox" id="snow" value="snow" v-model="guestConfig.imgSetting"
-                  :disabled="!customSwitch"><label for="snow">雪花</label> <input style="width: 3em;" type="number"
-                  v-model="guestConfig.imgNumSetting[2]"
+              <div><label><input type="checkbox" value="snow" v-model="guestConfig.imgSetting"
+                    :disabled="!customSwitch">雪花</label> <input type="number" v-model="guestConfig.imgNumSetting[2]"
                   :disabled="!guestConfig.imgSetting.includes('snow') || !customSwitch"> 个
               </div>
-              <div><input type="checkbox" id="rain" value="rain" v-model="guestConfig.imgSetting"
-                  :disabled="!customSwitch"><label for="rain">雨点</label> <input style="width: 3em;" type="number"
-                  v-model="guestConfig.imgNumSetting[3]"
+              <div><label><input type="checkbox" value="rain" v-model="guestConfig.imgSetting"
+                    :disabled="!customSwitch">雨点</label> <input type="number" v-model="guestConfig.imgNumSetting[3]"
                   :disabled="!guestConfig.imgSetting.includes('rain') || !customSwitch"> 个
               </div>
             </div>
-            <div class="option-col">
-              <div class="f-show"><!-- <input type="checkbox" id="cs" v-model="customSwitch.changeShow"> --><label
-                  for="cs">
-                  自定义显示</label></div>
+            <div class="nf-option-group">
+              <div class="nf-section"><span class="nf-emj">⏱️</span><span>自定义显示</span></div>
               <div><input type="checkbox" id="fi" v-model="guestConfig.fadeIn" :disabled="!customSwitch"><label
                   for="fi">淡入</label>
               </div>
               <div><input type="checkbox" id="fo" v-model="guestConfig.fadeOut" :disabled="!customSwitch"><label
                   for="fo">淡出</label>
               </div>
-              <div><input style="width: 2.5em;" type="number" v-model="guestConfig.fadeOut_time"
+              <div><input type="number" v-model="guestConfig.fadeOut_time"
                   :disabled="!customSwitch || !guestConfig.fadeOut"> 秒消失</div>
-              <div title="除下雨以外的风力，建议留空或填“-50”"><input style="width: 2.5em;" type="number" v-model="guestConfig.wind_x"
+              <div title="除下雨以外的风力，建议留空或填“-50”"><input type="number" v-model="guestConfig.wind_x"
                   :disabled="!customSwitch"> 风力 ❔</div>
             </div>
-            <div class="option-col">
-              <div class="f-rain"><!-- <input type="checkbox" id="cr" v-model="customSwitch.changeRain"> --><label
-                  for="cr">
-                  下雨设置</label>
+            <div class="nf-option-group">
+              <div class="nf-section"><span class="nf-emj">🌧️</span><span>下雨设置</span>
               </div>
-              <div><input style="width: 3em;" type="number" v-model="guestConfig.rain_speed" :disabled="!customSwitch">
+              <div><input type="number" v-model="guestConfig.rain_speed" :disabled="!customSwitch">
                 下雨风力
               </div>
-              <div><input style="width: 3em;" type="number" v-model="guestConfig.rain_angle"
-                  :disabled="!customSwitch"><span title="从+x方向逆时针的角度，270为垂直向下"> 下雨风向 ❔</span></div>
-              <!-- v-show="false"<div><input style="width: 3em;" type="number" v-model="guestConfig.rainSetting.wind_deviation"
-              :disabled="!customSwitch.changeRain"> 横向风误差</div>-->
-              <div><input type="checkbox" id="bo" v-model="guestConfig.rain_hasBounce" :disabled="!customSwitch"><label
-                  for="bo">落地水花</label>
+              <div><input type="number" v-model="guestConfig.rain_angle" :disabled="!customSwitch"><span
+                  title="从+x方向逆时针的角度，270为垂直向下"> 下雨风向 ❔</span></div>
+              <div><label><input type="checkbox" v-model="guestConfig.rain_hasBounce"
+                    :disabled="!customSwitch">落地水花</label>
               </div>
             </div>
           </div>
-          <div class="nf-text" style="display: none;">
-            <p>{{ guestConfig }}</p>
-            <p>每个子自定义开关如未勾选，其设置将不生效，并且以网站默认设置为准。若未选择图案，将根据季节自动展示。</p>
-            <p>所有配置会保存到本地缓存，当网站配置或程序更新后，用户配置将被重置。</p>
+          <div class="nf-btn-group">
+            <button class="nf-btn" @click="apply()">应用</button>
+            <button class="nf-btn" @click="reset()">重置</button>
+            <button class="nf-btn" @click="confirm()">确定</button>
+            <button class="nf-btn" @click="cancel()">取消</button>
           </div>
-          <div class="btn-list">
-            <button @click="apply()">应用</button>
-            <button @click="reset()">重置</button>
-            <button @click="confirm()">确定</button>
-            <button @click="cancel()">取消</button>
-          </div>
-          <div class="link-list">
+          <div class="nf-link-list">
             <div style="float: left;">
-              <img style="vertical-align: middle;" src="./icon.png" alt=""><span>自然飘落特效 </span><span class="v"
-                title="GUI版本">{{ myVersion
-                }}</span> - <span class="v" title="核心js版本" style="color: #FF9800;">{{ jsVersion }}</span>
+              <img src="./icon.png" alt=""><span>自然飘落特效 </span><span class="v" title="GUI版本">{{ myVersion
+              }}</span> - <span class="v" title="核心js版本" style="color: #FF9800;">{{ jsVersion }}</span>
             </div>
             <div style="float: right;">
-              <svg style="vertical-align: middle;" xmlns="http://www.w3.org/2000/svg" width="32" height="32"
-                viewBox="0 0 24 24">
+              <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24">
                 <path fill="currentColor"
                   d="M12.001 2c-5.525 0-10 4.475-10 10a9.994 9.994 0 0 0 6.837 9.488c.5.087.688-.213.688-.476c0-.237-.013-1.024-.013-1.862c-2.512.463-3.162-.612-3.362-1.175c-.113-.288-.6-1.175-1.025-1.413c-.35-.187-.85-.65-.013-.662c.788-.013 1.35.725 1.538 1.025c.9 1.512 2.337 1.087 2.912.825c.088-.65.35-1.087.638-1.337c-2.225-.25-4.55-1.113-4.55-4.938c0-1.088.387-1.987 1.025-2.688c-.1-.25-.45-1.275.1-2.65c0 0 .837-.262 2.75 1.026a9.28 9.28 0 0 1 2.5-.338c.85 0 1.7.112 2.5.337c1.913-1.3 2.75-1.024 2.75-1.024c.55 1.375.2 2.4.1 2.65c.637.7 1.025 1.587 1.025 2.687c0 3.838-2.337 4.688-4.563 4.938c.363.312.676.912.676 1.85c0 1.337-.013 2.412-.013 2.75c0 .262.188.574.688.474A10.016 10.016 0 0 0 22 12c0-5.525-4.475-10-10-10Z" />
               </svg><span><a href="https://github.com/qtqz/natural-falling-effect"
@@ -112,7 +88,7 @@
 </template>
 
 <script>
-import { fallingCreate, version, defaultConfig } from '../core/naturalfalling'
+import { fallingCreate, version, defaultConfig } from 'natural-falling-js'
 
 export default {
   name: 'vue-natural-falling',
@@ -139,7 +115,7 @@ export default {
       guestConfig: {},//是一个基于masterConfig_full修改的完整配置
       masterConfig_full: {},//必须要有，因为要在面板中显示默认值，并且作为备份用于重置
       customSwitch: false,
-      myVersion: '0.8.2',
+      myVersion: '0.8.6',
       jsVersion: version,
       easyModeFallingFlag: true,
       f: null
@@ -147,19 +123,21 @@ export default {
   },
   methods: {
     apply() {
-      localStorage.setItem("guestConfig", JSON.stringify(this.guestConfig))
+      localStorage.setItem("nf_guestConfig", JSON.stringify(this.guestConfig))
       this.stop()
       setTimeout(() => {
-        if (this.customSwitch == false) {
+        if (this.customSwitch == false && (this.guestConfig.open == this.masterConfig_full.open)) {
           this.reset()
         } else this.guestConfig.custom = true//用于记忆到缓存
         this.start(/* this.masterConfig ,*/ this.guestConfig)
       }, 1000)
+      console.log(this.guestConfig);
+
     },
     reset() {
       this.guestConfig = JSON.parse(JSON.stringify(this.masterConfig_full))
-      localStorage.removeItem("guestConfig")
-      localStorage.removeItem("configVersion")
+      localStorage.removeItem("nf_guestConfig")
+      localStorage.removeItem("nf_configVersion")
       this.customSwitch = false
     },
     confirm() {
@@ -205,10 +183,10 @@ export default {
   },
   mounted() {
     console.log(`The initial.`)
-    let oldVersion = localStorage.getItem("configVersion")
+    let oldVersion = localStorage.getItem("nf_configVersion")
     let newVersion = this.jsVersion + JSON.stringify(this.masterConfig)
-    let old = JSON.parse(localStorage.getItem("guestConfig"))
-    localStorage.setItem("configVersion", newVersion)
+    let old = JSON.parse(localStorage.getItem("nf_guestConfig"))
+    localStorage.setItem("nf_configVersion", newVersion)
 
     if (oldVersion == newVersion && old) {
       this.guestConfig = old
@@ -221,6 +199,7 @@ export default {
     }
     this.easyModeFallingFlag = this.guestConfig.open
     this.start(this.guestConfig)
+    console.log(old, this.guestConfig);
     /**
      * 
      * TO DO
@@ -238,39 +217,34 @@ export default {
 }
 </script>
 
-<style scoped>
-.v {
-  border: 2px rgba(205, 205, 205, 0.5) solid;
-  border-radius: 4px;
-  font-family: 'Times New Roman', Times, serif;
-  border: 2px rgba(205, 205, 205, 0.6) solid;
-  font-family: 'Times New Roman', Times, serif;
-  font-style: italic;
-  padding: 0 0.3em !important;
+<style lang="scss">
+.nf-container {
+  position: fixed;
+  display: flex;
+  width: 100%;
+  height: 100vh;
+  justify-content: center;
+  align-items: center;
+  transition: all 0.3s ease;
+  top: 0;
+  z-index: 20;
+  pointer-events: none;
 }
 
-.dark .nf-button {
-  background-color: rgba(255, 255, 255, 0.7);
+.nf-enter-from {
+  opacity: 0;
+  transform: scale(1.05);
 }
 
-.dark .nf-main {
-  background-color: rgb(37, 45, 56);
-  box-shadow: 2px 2px 15px #111;
-  color: rgba(255, 255, 255, 0.86);
+.nf-leave-to {
+  opacity: 0;
+  transform: scale(1.05);
 }
 
-.dark .option-row {
-  background-color: rgb(37, 45, 56);
-  box-shadow: 2px 2px 15px #111;
-  border: 1px solid rgba(0, 0, 0, 0.2);
-}
-
-.dark .nf-text {
-  border: 1px solid rgba(0, 0, 0, 0.7);
-}
-
-.dark .option-col:after {
-  border-left: 2px solid rgba(255, 255, 255, 0.5);
+.nf-button.hide {
+  opacity: 0;
+  user-select: none;
+  pointer-events: none;
 }
 
 .nf-button {
@@ -313,76 +287,43 @@ export default {
   border: 1px rgb(255, 255, 255) solid;
 }
 
-.link-list>div>span {
+.nf-link-list {
+  margin-top: 1em;
+  width: 100%;
+  vertical-align: middle;
+
+  .v {
+    border-radius: 4px;
+    border: 2px rgba(205, 205, 205, 0.6) solid;
+    font-family: 'Times New Roman', Times, serif;
+    font-style: italic;
+    padding: 0 0.3em !important;
+  }
+
+  a {
+    text-decoration: none;
+    color: dodgerblue;
+  }
+
+  img,
+  svg {
+    display: inline-block;
+  }
+}
+
+.nf-link-list>div>span {
   padding-left: 0.5em;
 }
 
-a {
-  text-decoration: none;
-  color: dodgerblue;
+.nf-section {
+  vertical-align: middle;
+  line-height: 1.5;
 }
 
-.link-list {
-  margin-top: 1em;
-  width: 100%;
-}
-
-.option-mask {
-  width: 100%;
-  height: 180px;
-  position: absolute;
-  top: 0;
-  z-index: 2;
-  cursor: not-allowed;
-}
-
-.nf-text {
-  font-size: 14px;
-  border: 1px #ccc solid;
-  border-radius: 6px;
-  width: 100%;
-  padding: 0.5rem 1rem;
-  margin: 1rem 0;
-}
-
-.f-type::before {
-  content: '⛅';
-}
-
-.f-show::before {
-  content: '⏱️';
-}
-
-.f-rain::before {
-  content: '🌧️';
-}
-
-.f-type::before,
-.f-show::before,
-.f-rain::before {
-  position: absolute;
+.nf-emj {
+  display: inline-block;
   left: -1.5em;
   font-size: 1.5rem;
-}
-
-.nf-container {
-  position: fixed;
-  display: flex;
-  width: 100%;
-  height: 100vh;
-  justify-content: center;
-  align-items: center;
-  transition: all 0.3s ease;
-}
-
-.nf-enter-from {
-  opacity: 0;
-  transform: scale(1.05);
-}
-
-.nf-leave-to {
-  opacity: 0;
-  transform: scale(1.05);
 }
 
 .nf-main {
@@ -399,96 +340,186 @@ a {
   align-items: center;
   transition: opacity 0.2s;
   opacity: 1;
-  z-index: 11;
-}
+  pointer-events: initial;
 
-.hide {
-  opacity: 0;
-  user-select: none;
-  pointer-events: none;
+  h2 {
+    font-size: 1.5rem;
+  }
+
+  h3 {
+    font-size: 1.25rem;
+    width: 100%;
+    padding: 0 1rem;
+
+    input {
+      width: 1.25rem;
+      height: 1.25rem;
+      vertical-align: middle;
+    }
+  }
 }
 
 .nf-main>* {
   box-sizing: border-box;
 }
 
-.btn-list {
-  display: flex;
-  justify-content: space-around;
-  width: 280px;
-  margin: 1.5em auto;
-  line-height: 1.7em;
-  text-align: center;
-}
-
-.btn-list button {
-  font-size: 1rem;
-}
-
-.nf-mask {
-  display: none;
-  opacity: 0;
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  z-index: 5;
-  background-color: rgba(0, 0, 0, 0.7);
-  transition: opacity 0.5s;
-}
-
-.option-row {
+/* 紧凑布局网格 */
+.nf-option-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10%;
   position: relative;
   width: 100%;
-  padding-top: 1.5em;
-  margin: 1em 0;
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-evenly;
-  align-content: space-around;
+  margin: 2em 0 1em;
   background-color: #ffff;
   border-radius: 8px;
   border: 1px solid rgba(255, 255, 255, .8);
   box-shadow: 1px 1px 10px #ccc;
+  padding: 1rem 2rem 0;
 }
 
-.option-col {
+.nf-option-group {
   min-height: 150px;
-  width: 26%;
-  margin: 4px 0;
   box-sizing: border-box;
   position: relative;
-  padding-left: 1.4em;
+  margin-bottom: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+
+  input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    vertical-align: middle;
+    margin-right: 4px;
+  }
+
+  input[type="number"] {
+    margin-left: 3px;
+    width: 3.125em;
+    border-width: 1px;
+    padding: 0 2px;
+    height: 1.5em;
+    border-color: light-dark(rgb(118, 118, 118), rgb(133, 133, 133));
+    background-color: field;
+    border-radius: 4px;
+  }
+
+  input:disabled {
+    cursor: not-allowed;
+    background-color: light-dark(rgba(239, 239, 239, 0.3), rgba(59, 59, 59, 0.3));
+    color: light-dark(rgb(84, 84, 84), rgb(170, 170, 170));
+    border-color: rgba(118, 118, 118, 0.3);
+  }
+
+  label {
+    cursor: inherit;
+  }
 }
 
-.option-col>div {
-  padding-left: 3px;
+.nf-option-group>div {
   position: relative;
 }
 
-.option-col>div:first-child {
-  /* padding-left: 0; */
-  margin-bottom: 10px;
-  line-height: 1.5em;
-}
-
-.option-col:after {
+.nf-option-group:after {
   content: "";
   position: absolute;
-  right: -16px;
-  top: 24%;
-  height: 56%;
+  right: -30px;
+  top: 32%;
+  height: 60%;
   width: 1px;
   border-left: 2px solid rgba(0, 0, 0, .2);
 }
 
-.option-col:last-child:after {
+.nf-option-group:last-child:after {
   content: unset;
 }
 
-input[type="number"] {
-  margin-left: 3px;
+.dark {
+  .nf-button {
+    background-color: rgba(255, 255, 255, 0.7);
+  }
+
+  .nf-main {
+    background-color: rgb(37, 45, 56);
+    box-shadow: 2px 2px 15px #111;
+    color: rgba(255, 255, 255, 0.86);
+  }
+
+  .nf-option-grid {
+    background-color: rgb(37, 45, 56);
+    box-shadow: 2px 2px 15px #111;
+    border: 1px solid rgba(0, 0, 0, 0.2);
+  }
+
+  .nf-option-group:after {
+    border-left: 2px solid rgba(255, 255, 255, 0.5);
+  }
+}
+
+/* 输入框基础样式 */
+.nf-main input {
+  height: 32px;
+  padding: 6px 12px;
+  border: 1px solid #dcdfe6;
+  border-radius: 4px;
+  font-size: 14px;
+  transition: all 0.2s;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.nf-main input:hover {
+  border-color: #c0c4cc;
+}
+
+.nf-main input:focus {
+  border-color: #409eff;
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(64, 158, 255, 0.2);
+}
+
+/* 按钮样式 */
+.nf-btn {
+  height: 34px;
+  padding: 0 16px;
+  border-radius: 4px;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition: all 0.2s;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 80px;
+  background-color: #fffa;
+  border: 1px solid #dcdfe6;
+  color: #606266;
+}
+
+.nf-btn:hover {
+  border-color: #409eff;
+  color: #409eff;
+  background-color: initial;
+}
+
+/* 按钮组 */
+.nf-btn-group {
+  display: flex;
+  gap: 16px;
+  margin: 1.5em auto;
+}
+
+/* 表单分组标题 */
+.nf-section {
+  font-size: 16px;
+  font-weight: 600;
+  color: #303133;
+  margin: 0 0 10px 0;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #ebeef5;
+  line-height: 1.5em;
 }
 
 @media screen and (max-width: 600px) {
@@ -499,31 +530,44 @@ input[type="number"] {
     overflow-y: scroll;
   }
 
-  .option-row {
+  .nf-option-grid {
     padding: 1.5em 0.5em 0;
+    margin: 1em 0;
+    gap: 0 8px;
+    grid-template-columns: unset;
+    justify-content: center;
+    justify-items: center;
+    grid-template-areas:
+      ". ."
+      "h h";
   }
 
-  .option-col {
-    width: 50%;
-    flex-grow: 1;
-    max-width: 60%;
+  .nf-option-group:nth-child(3) {
+    grid-area: h;
   }
 
-  .option-col:after {
+  .nf-option-group:after {
     display: none;
   }
 
-  .link-list {
+  .nf-link-list {
     margin-top: 1em;
   }
 
-  .link-list>div {
-    float: none !important;
+  .nf-link-list>div {
+    float: unset !important;
     margin-top: 4px;
   }
 
-  br {
-    display: none;
+  .nf-btn-group {
+    margin: 0 2em;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .nf-btn {
+    height: 32px;
+    font-size: 14px;
   }
 }
 </style>
